@@ -1,0 +1,22 @@
+version: '3'
+services:
+  redis:
+    image: 'redis:6.2.1-alpine'
+  api: 
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes: 
+      - /app/node_modules
+      - ./api:/app
+    environment: 
+      - COMPLEX_DATABASE
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '8080:80'
+    depends_on:
+      - api
