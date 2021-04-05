@@ -9,7 +9,7 @@ import { Lesson } from './lesson/lesson.entity';
   imports: [
       TypeOrmModule.forRoot({
         type: 'mongodb',
-        url: 'urlToAtlasHere',
+        url: process.env.NEST_APP_DB_URL,
         synchronize: true,
         useUnifiedTopology: true,
         entities: [
