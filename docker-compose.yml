@@ -10,13 +10,13 @@ services:
       - /app/node_modules
       - ./api:/app
     environment: 
-      - COMPLEX_DATABASE
+      - NEST_APP_DB_URL
   nginx:
     restart: always
     build:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - '8080:80'
+      - '80:80'
     depends_on:
       - api
