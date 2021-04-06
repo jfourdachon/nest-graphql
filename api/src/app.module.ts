@@ -4,6 +4,8 @@ import { LessonModule } from './lesson/lesson.module';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { Lesson } from './lesson/lesson.entity';
 
+require('dotenv').config()
+
 
 @Module({
   imports: [

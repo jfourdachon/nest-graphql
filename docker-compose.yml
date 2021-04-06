@@ -10,7 +10,7 @@ services:
       - /app/node_modules
       - ./api:/app
     environment: 
-      - COMPLEX_DATABASE
+      - NEST_APP_DB_URL
   nginx:
     restart: always
     build:
