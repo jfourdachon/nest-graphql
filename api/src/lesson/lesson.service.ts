@@ -12,14 +12,19 @@ export class LessonService {
         @InjectRepository(Lesson) private lessonRepository: Repository<Lesson>
     ) { }
 
-    createLesson(name, startDate, endDate): Promise<Lesson> {
+    async getLessonById(id: string): Promise<Lesson> {
+        return this.lessonRepository.findOne({ id })
+    }
+
+    createLesson(createLessonInput): Promise<Lesson> {
+        const { name, startDate, endDate } = createLessonInput
         const lesson = this.lessonRepository.create({
             id: uuid(),
             name,
             startDate,
             endDate
         })
-         return this.lessonRepository.save(lesson)
+        return this.lessonRepository.save(lesson)
 
     }
 }
