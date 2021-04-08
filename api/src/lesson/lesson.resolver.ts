@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
 import { create } from "node:domain";
 import { CreateLessonInput } from "./lesson.input";
 import { LessonService } from "./lesson.service";
-import { LessonsType, LessonType } from "./lesson.type";
+import {  LessonType } from "./lesson.type";
 
 @Resolver(of => LessonType)
 export class LessonResolver {
