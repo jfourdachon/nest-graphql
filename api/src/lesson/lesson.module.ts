@@ -10,7 +10,8 @@ import { LessonService } from './lesson.service';
         TypeOrmModule.forFeature([Lesson]),
         StudentModule
     ],
-    providers: [LessonResolver, LessonService]
+    providers: [LessonResolver, LessonService],
+    exports: [LessonService]
 })
 export class LessonModule {
 

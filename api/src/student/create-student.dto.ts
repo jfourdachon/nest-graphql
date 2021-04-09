@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, ID, InputType } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
 
 
@@ -13,5 +13,8 @@ export class CreateStudentDto {
     @MinLength(3)
     @Field()
     lastname: string
+
+    @Field(type => [ID], {defaultValue: []})
+    lessons: string[]
 
 }

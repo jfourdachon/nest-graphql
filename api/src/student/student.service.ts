@@ -27,13 +27,20 @@ export class StudentService {
         })
     }
 
-    createStudent(createStudentDto: CreateStudentDto): Promise<Student> {
-        const { firstname, lastname } = createStudentDto
+    async createStudent(createStudentDto: CreateStudentDto): Promise<Student> {
+        const { firstname, lastname, lessons } = createStudentDto
         const newStudent = this.studentRepository.create({
             id: uuid(),
             firstname,
-            lastname
+            lastname,
+            lessons
         })
         return this.studentRepository.save(newStudent)
+    }
+
+    async assignLessonsToStudent(studentId: string, lessonsIds: string[]): Promise<Student> {
+        const student = await this.studentRepository.findOne({ id: studentId })
+        student.lessons = [...student.lessons, ...lessonsIds]
+        return this.studentRepository.save(student)
     }
 }

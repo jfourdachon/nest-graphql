@@ -17,5 +17,7 @@ export class Student {
     @Column()
     lastname: string
 
+    @Column()
+    lessons: string[]
 
 }
