@@ -5,6 +5,8 @@ import {TypeOrmModule} from '@nestjs/typeorm'
 import { Lesson } from './lesson/lesson.entity';
 import { StudentModule } from './student/student.module';
 import { Student } from './student/student.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 require('dotenv').config()
 
@@ -26,6 +28,8 @@ require('dotenv').config()
     }),
     LessonModule,
     StudentModule,
+    AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
