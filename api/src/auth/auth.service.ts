@@ -4,26 +4,14 @@ import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
-    constructor() { }
+    constructor(private userService: UserService) { }
 
     async validate({ id }) {
-        // const user = await this.authRepository.findOne({ id });
-        // if (!user) {
-        //     throw Error('Authenticate validation error');
-        // }
-        // return user;
+        const user = await this.userService.findById(id);
+        if (!user) {
+            throw Error('Authenticate validation error');
+        }
+        return user;
     }
 
-    async findUserByEmail(email: string) {
-        // return this.authRepository.findOne({ where: { email } })
-    }
-
-
-    async signup(signupDto, password) {
-        // const user = this.authRepository.create({
-        //     email: signupDto.email,
-        //     password
-        // })
-        // return this.authRepository.save(user)
-    }
 }

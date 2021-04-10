@@ -33,11 +33,17 @@ type Lesson {
   students(populate: Boolean!): [Student!]!
 }
 
+input LoginDto {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   assignLessonsToStudent(assignLessonsToStudentDto: AssignLessonsToStudentsDto!): Student!
   assignStudentsToLesson(assignStudentsToLessonDto: AssignStudentsToLessonDto!): Lesson!
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createStudent(createStudentDto: CreateStudentDto!): Student!
+  login(loginDto: LoginDto!): User!
 }
 
 type Query {
@@ -52,4 +58,11 @@ type Student {
   firstname: String!
   lastname: String!
   lessons: [Lesson!]!
+}
+
+type User {
+  _id: ID!
+  email: String!
+  isVegetarian: Boolean!
+  username: String!
 }

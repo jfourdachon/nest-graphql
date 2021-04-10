@@ -5,41 +5,44 @@ import { ResGql } from '../decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, SignupDto } from './auth-dto';
 import { AuthService } from './auth.service';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/user.model';
 
 @Resolver('Auth')
 export class AuthResolver {
     constructor(
         private readonly jwt: JwtService,
-        private authSevice: AuthService
+        private userService: UserService
     ) { }
 
-    // @Mutation(returns => UserType)
-    // async login(
-    //     @Args('loginDto') { email, password }: LoginDto,
-    //     @ResGql() res: Response,
-    // ) {
-    //     const user = await this.authSevice.findUserByEmail(email);
-    //     if (!user) {
-    //         throw Error('Email or password incorrect');
-    //     }
+    @Mutation(returns => User)
+    async login(
+        @Args('loginDto') { email, password }: LoginDto,
+        @ResGql() res: Response,
+    ) {
+        const user = await this.userService.findByEmail(email);
+        if (!user) {
+            throw Error('Email or password incorrect');
+        }
 
-    //     const valid = await bcryptjs.compare(password, user.password);
-    //     if (!valid) {
-    //         throw Error('Email or password incorrect');
-    //     }
+        const valid = await bcryptjs.compare(password, user.password);
+        if (!valid) {
+            throw Error('Email or password incorrect');
+        }
 
-    //     const jwt = this.jwt.sign({ id: user.id });
-    //     res.cookie('token', jwt, { httpOnly: true });
+        const jwt = this.jwt.sign({ id: user._id });
+        res.cookie('token', jwt, { httpOnly: true });
 
-    //     return user;
-    // }
+        return user;
+    }
 
-    // @Mutation(returns => UserType)
+    //TODO
+    // @Mutation(returns => User)
     // async signup(
     //     @Args('signupDto') signupDto: SignupDto,
     //     @ResGql() res: Response,
     // ) {
-    //     const emailExists = await this.authSevice.findUserByEmail(signupDto.email);
+    //     const emailExists = await this.userService.findByEmail(signupDto.email);
     //     if (emailExists) {
     //         throw Error('Email is already in use');
     //     }
