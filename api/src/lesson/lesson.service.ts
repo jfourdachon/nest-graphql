@@ -1,52 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Lesson } from './lesson.entity';
 
 import { v4 as uuid } from 'uuid'
 import { Parent, ResolveField } from '@nestjs/graphql';
+import { InjectModel } from '@nestjs/mongoose';
+import { Lesson, LessonDocument } from './lesson.model';
+import { Model } from 'mongoose';
 
 
 @Injectable()
 export class LessonService {
     constructor(
-        @InjectRepository(Lesson) private lessonRepository: Repository<Lesson>
+        @InjectModel(Lesson.name) private lessonModel: Model<LessonDocument>
     ) { }
 
     async getLessonById(id: string): Promise<Lesson> {
-        return this.lessonRepository.findOne({ id })
+        return this.lessonModel.findOne({ id }).exec()
     }
 
     async getAllLessons(): Promise<Lesson[]> {
-        return this.lessonRepository.find()
+        return this.lessonModel.find().exec()
     }
 
     getManyLessons(lessonsIds: string[]): Promise<Lesson[]> {
-        return this.lessonRepository.find({
+        return this.lessonModel.find({
             where: {
                 id: {
                     $in: lessonsIds
                 }
             }
-        })
+        }).exec()
     }
 
     createLesson(createLessonInput): Promise<Lesson> {
         const { name, startDate, endDate, students } = createLessonInput
-        const lesson = this.lessonRepository.create({
+        const lesson = new this.lessonModel({
             id: uuid(),
             name,
             startDate,
             endDate,
             students
         })
-        return this.lessonRepository.save(lesson)
+        return lesson.save()
     }
 
     async assignStudentsToLesson(lessonId: string, studentIds: string[]): Promise<Lesson> {
-        const lesson = await this.lessonRepository.findOne({ id: lessonId })
+        const lesson = await this.lessonModel.findOne({ id: lessonId })
         lesson.students = [...lesson.students, ...studentIds]
-        return this.lessonRepository.save(lesson)
+        return lesson.save()
     }
 
 }

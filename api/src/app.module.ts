@@ -8,6 +8,7 @@ import { Student } from './student/student.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/users.entity';
+import { MongooseModule } from '@nestjs/mongoose';
 
 
 require('dotenv').config()
@@ -15,17 +16,7 @@ require('dotenv').config()
 
 @Module({
   imports: [
-      TypeOrmModule.forRoot({
-        type: 'mongodb',
-        url: process.env.NEST_APP_DB_URL,
-        synchronize: true,
-        useUnifiedTopology: true,
-        entities: [
-            Lesson,
-            Student,
-            User
-        ]
-      }),
+    MongooseModule.forRoot(process.env.NEST_APP_DB_URL),
     GraphQLModule.forRoot({
         autoSchemaFile: true,
     }),

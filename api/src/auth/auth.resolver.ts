@@ -1,7 +1,7 @@
 import * as bcryptjs from 'bcryptjs';
 import { Response } from 'express';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { ResGql } from '../shared/decorators/decorators';
+import { ResGql } from '../decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, SignupDto } from './auth-dto';
 import { AuthService } from './auth.service';
