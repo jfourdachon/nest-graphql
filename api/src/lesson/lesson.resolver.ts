@@ -29,8 +29,7 @@ export class LessonResolver {
     @ResolveField()
     async students(@Parent() lesson: LessonDocument, @Args('populate') populate: boolean) {
         if (populate) {
-            const resp1 = await lesson.populate({ path: 'students', model: Student.name }).execPopulate()
-            console.log(lesson)
+            await lesson.populate({ path: 'students', model: Student.name }).execPopulate()
             return lesson.students
         }
     }
@@ -38,15 +37,14 @@ export class LessonResolver {
     @Mutation(returns => Lesson)
     // @UseGuards(GqlAuthGuard)
     createLesson(@Args('createLessonDto') createLessonDto: CreateLessonDto, @GqlUser() user: any,) {  //TODO return User after migrating to mongo
-        // console.log(user)
         return this.lessonService.createLesson(createLessonDto)
     }
 
     @Mutation(returns => Lesson)
     async assignStudentsToLesson(@Args('assignStudentsToLessonDto') assignStudentsToLessonDto: AssignStudentsToLessonDto) {
         const { lessonId, studentsIds } = assignStudentsToLessonDto
-        const resp2 = await this.lessonService.assignStudentsToLesson(lessonId, studentsIds)
-        return resp2
+        const resp = await this.lessonService.assignStudentsToLesson(lessonId, studentsIds)
+        return resp
     }
 
 }

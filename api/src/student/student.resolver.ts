@@ -25,7 +25,6 @@ export class StudentResolver {
     @ResolveField()
     async lessons(@Parent() student: StudentDocument) {
             await student.populate({path: 'lessons', model: Lesson.name}).execPopulate()
-            console.log(student.lessons)
             return student.lessons
     }
 

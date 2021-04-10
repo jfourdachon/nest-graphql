@@ -11,7 +11,7 @@ export const ResGql = createParamDecorator(
 );
 
 
-// Put response Type as User after migrating to mongo
+//TODO Put response Type as User after migrating to mongo
 export const GqlUser = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context).getContext();

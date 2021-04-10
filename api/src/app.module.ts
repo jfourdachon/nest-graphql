@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { LessonModule } from './lesson/lesson.module';
 import { StudentModule } from './student/student.module';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
 
@@ -22,7 +22,7 @@ require('dotenv').config()
     LessonModule,
     StudentModule,
     // AuthModule,
-    // UsersModule,
+    UserModule,
   ],
 })
 export class AppModule {}
