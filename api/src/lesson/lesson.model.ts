@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Student } from "src/student/student.model";
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 
 
 @ObjectType()
@@ -9,12 +9,8 @@ import { Field, ObjectType } from '@nestjs/graphql'
 export class Lesson {
 
     //Default mongo id
-    @Field(() => String)
-    _id: string
-
-    @Field(() => String)
-    @Prop()
-    lessonId: string
+    @Field(() => ID)
+    _id: MongooseSchema.Types.ObjectId
 
     @Field(() => String)
     @Prop()

@@ -1,18 +1,15 @@
 import { Document, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Lesson } from 'src/lesson/lesson.model'
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { ObjectId } from 'bson'
 
 @ObjectType()
 @Schema()
 export class Student {
 
-    @Field(() => String)
-    _id: string
-
-    @Field(() => String)
-    @Prop()
-    studentId: string
+    @Field(() => ID)
+    _id: MongooseSchema.Types.ObjectId
 
     @Field(() => String)
     @Prop()
@@ -23,8 +20,8 @@ export class Student {
     lastname: string
 
     @Field(() => [Lesson])
-    @Prop({ref: Lesson.name})
-    lessons: (string | Lesson)[]
+    @Prop({ ref: Lesson.name})
+    lessons: (String | Lesson)[]
 }
 
 export type StudentDocument = Student & Document

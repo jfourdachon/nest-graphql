@@ -8,7 +8,7 @@ input AssignLessonsToStudentsDto {
 }
 
 input AssignStudentsToLessonDto {
-  lessonId: ID!
+  lessonId: String!
   studentsIds: [ID!]!
 }
 
@@ -26,9 +26,8 @@ input CreateStudentDto {
 }
 
 type Lesson {
-  _id: String!
+  _id: ID!
   endDate: String!
-  lessonId: String!
   name: String!
   startDate: String!
   students(populate: Boolean!): [Student!]!
@@ -49,9 +48,8 @@ type Query {
 }
 
 type Student {
-  _id: String!
+  _id: ID!
   firstname: String!
   lastname: String!
   lessons: [Lesson!]!
-  studentId: String!
 }

@@ -39,7 +39,7 @@ export class StudentService {
     }
 
     async assignLessonsToStudent(studentId: string, lessonsIds: string[]): Promise<Student> {
-        const student = await this.studentModel.findOne({ studentId: studentId }).exec()
+        const student = await this.studentModel.findById(studentId).exec()
         student.lessons = [...student.lessons, ...lessonsIds]
         return student.save()
     }

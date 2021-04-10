@@ -1,6 +1,5 @@
 import { UseGuards } from "@nestjs/common";
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
-import { create } from "node:domain";
 import { GqlAuthGuard } from "src/auth/graphql-auth";
 import { GqlUser } from "src/decorators/decorators";
 import { Student } from "src/student/student.model";
@@ -9,6 +8,8 @@ import { AssignStudentsToLessonDto } from "./assign-students-to-lesson-dto";
 import { CreateLessonDto } from "./lesson.dto";
 import { Lesson, LessonDocument } from "./lesson.model";
 import { LessonService } from "./lesson.service";
+import { Schema as MongooseSchema } from 'mongoose';
+
 
 @Resolver(of => Lesson)
 export class LessonResolver {
@@ -29,7 +30,7 @@ export class LessonResolver {
     async students(@Parent() lesson: LessonDocument, @Args('populate') populate: boolean) {
         if (populate) {
             const resp1 = await lesson.populate({ path: 'students', model: Student.name }).execPopulate()
-            console.log({resp1})
+            console.log(lesson)
             return lesson.students
         }
     }
