@@ -1,15 +1,15 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { IsUUID } from "class-validator";
+import { IsMongoId } from "class-validator";
 
 
 @InputType()
 export class AssignLessonsToStudentsDto {
 
-    @IsUUID()
+    @IsMongoId()	
     @Field(type => ID)
     studentId: string
 
-    @IsUUID("4", {each: true})
+    @IsMongoId({each: true})	
     @Field(type => [ID])
     lessonsIds: string[]
 }

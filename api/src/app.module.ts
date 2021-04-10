@@ -1,13 +1,12 @@
 import { GraphQLModule } from '@nestjs/graphql';
 import { Module } from '@nestjs/common';
 import { LessonModule } from './lesson/lesson.module';
-import {TypeOrmModule} from '@nestjs/typeorm'
-import { Lesson } from './lesson/lesson.entity';
 import { StudentModule } from './student/student.module';
-import { Student } from './student/student.entity';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { User } from './users/users.entity';
+import { UserModule } from './user/user.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { join } from 'path';
+
 
 
 require('dotenv').config()
@@ -15,24 +14,15 @@ require('dotenv').config()
 
 @Module({
   imports: [
-      TypeOrmModule.forRoot({
-        type: 'mongodb',
-        url: process.env.NEST_APP_DB_URL,
-        synchronize: true,
-        useUnifiedTopology: true,
-        entities: [
-            Lesson,
-            Student,
-            User
-        ]
-      }),
+    MongooseModule.forRoot(process.env.NEST_APP_DB_URL),
     GraphQLModule.forRoot({
-        autoSchemaFile: true,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        sortSchema: true,
     }),
     LessonModule,
     StudentModule,
-    AuthModule,
-    UsersModule,
+    // AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -1,0 +1,68 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AssignLessonsToStudentsDto {
+  lessonsIds: [ID!]!
+  studentId: ID!
+}
+
+input AssignStudentsToLessonDto {
+  lessonId: String!
+  studentsIds: [ID!]!
+}
+
+input CreateLessonDto {
+  endDate: String!
+  name: String!
+  startDate: String!
+  students: [ID!] = []
+}
+
+input CreateStudentDto {
+  firstname: String!
+  lastname: String!
+  lessons: [ID!] = []
+}
+
+type Lesson {
+  _id: ID!
+  endDate: String!
+  name: String!
+  startDate: String!
+  students(populate: Boolean!): [Student!]!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  assignLessonsToStudent(assignLessonsToStudentDto: AssignLessonsToStudentsDto!): Student!
+  assignStudentsToLesson(assignStudentsToLessonDto: AssignStudentsToLessonDto!): Lesson!
+  createLesson(createLessonDto: CreateLessonDto!): Lesson!
+  createStudent(createStudentDto: CreateStudentDto!): Student!
+  login(loginDto: LoginDto!): User!
+}
+
+type Query {
+  lesson(lessonId: String!): Lesson!
+  lessons: [Lesson!]!
+  student(id: String!): Student!
+  students: [Student!]!
+}
+
+type Student {
+  _id: ID!
+  firstname: String!
+  lastname: String!
+  lessons: [Lesson!]!
+}
+
+type User {
+  _id: ID!
+  email: String!
+  isVegetarian: Boolean!
+  username: String!
+}

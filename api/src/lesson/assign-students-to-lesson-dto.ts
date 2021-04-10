@@ -1,16 +1,17 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { IsUUID } from "class-validator";
+import { IsMongoId, IsUUID } from "class-validator";
+import { Model, Schema as MongooseSchema } from 'mongoose';
 
 
 @InputType()
 export class AssignStudentsToLessonDto {
 
-    @IsUUID()
-    @Field(type => ID)
-    lessonId: string
+    @IsMongoId()	
+    @Field(type => String)
+    lessonId:string
 
-    @IsUUID("4", {each: true})
-    @Field(ype => [ID])
-    studentsIds: string[]
+    @IsMongoId()	
+    @Field(type => [ID])
+    studentsIds:string[]
 
 }
