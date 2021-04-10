@@ -3,16 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
-import { AuthType } from './auth.type';
 import { User } from 'src/users/users.entity';
 import { UserType } from 'src/users/users.type';
-import { Auth } from './auth.entity';
 
 @Injectable()
 export class AuthService {
     constructor(@InjectRepository(User) private authRepository: Repository<User>) { }
 
-    async validate({ id }): Promise<AuthType> {
+    async validate({ id }): Promise<UserType> {
         const user = await this.authRepository.findOne({ id });
         if (!user) {
             throw Error('Authenticate validation error');
