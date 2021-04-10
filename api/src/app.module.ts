@@ -7,6 +7,8 @@ import { StudentModule } from './student/student.module';
 import { Student } from './student/student.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { User } from './users/users.entity';
+
 
 require('dotenv').config()
 
@@ -20,7 +22,8 @@ require('dotenv').config()
         useUnifiedTopology: true,
         entities: [
             Lesson,
-            Student
+            Student,
+            User
         ]
       }),
     GraphQLModule.forRoot({
