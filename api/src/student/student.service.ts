@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { CreateStudentDto } from './create-student.dto';
 import { v4 as uuid } from 'uuid'
 import { InjectModel } from '@nestjs/mongoose';
-import { Student, StudentDocument, StudentSchema } from './student.model';
-import { Model, Schema as MongooseSchema} from 'mongoose';
+import { Student, StudentDocument } from './student.model';
+import { Model} from 'mongoose';
 
 @Injectable()
 export class StudentService {
@@ -14,8 +13,8 @@ export class StudentService {
         return this.studentModel.findOne({id}).exec()
     }
 
-    getAll(): Promise<Student[]> {
-        return this.studentModel.find().exec()
+    async getAll(): Promise<Student[]> {
+        return await this.studentModel.find().exec()
     }
 
     async getManyStudents(sudentsIds: string[]): Promise<Student[]> {
@@ -31,7 +30,7 @@ export class StudentService {
     async createStudent(createStudentDto: CreateStudentDto): Promise<Student> {
         const { firstname, lastname, lessons } = createStudentDto
         const newStudent = new this.studentModel({
-            id: uuid(),
+            studentId: uuid(),
             firstname,
             lastname,
             lessons
@@ -40,7 +39,7 @@ export class StudentService {
     }
 
     async assignLessonsToStudent(studentId: string, lessonsIds: string[]): Promise<Student> {
-        const student = await this.studentModel.findOne({ id: studentId }).exec()
+        const student = await this.studentModel.findOne({ studentId: studentId }).exec()
         student.lessons = [...student.lessons, ...lessonsIds]
         return student.save()
     }

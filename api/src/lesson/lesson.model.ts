@@ -1,28 +1,36 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Student } from "src/student/student.model";
+import { Field, ObjectType } from '@nestjs/graphql'
 
 
+@ObjectType()
 @Schema()
 export class Lesson {
 
     //Default mongo id
-    _id: MongooseSchema.Types.ObjectId
+    @Field(() => String)
+    _id: string
 
+    @Field(() => String)
     @Prop()
-    id: string
+    lessonId: string
 
+    @Field(() => String)
     @Prop()
     name: string
 
+    @Field(() => String)
     @Prop()
     startDate: string
 
+    @Field(() => String)
     @Prop()
     endDate: string
 
-    @Prop({ref: Student.name})
-    students: string[]
+    @Field(() => [Student])
+    @Prop({ref: 'student'})
+    students: (string | Student)[]
 
 }
 

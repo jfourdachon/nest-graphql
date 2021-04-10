@@ -1,5 +1,4 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { Lesson } from "src/lesson/lesson.entity";
 import { LessonType } from "src/lesson/lesson.type";
 
 
