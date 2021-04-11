@@ -7,7 +7,7 @@ export class AuthService {
     constructor(private userService: UserService) { }
 
     async validate({ id }) {
-        const user = await this.userService.findById(id);
+        const user = await this.userService.getUserById(id);
         if (!user) {
             throw Error('Authenticate validation error');
         }

@@ -32,9 +32,9 @@ export class LessonService {
         return lesson.save()
     }
 
-    async assignStudentsToLesson(lessonId: string, studentIds: string[]): Promise<Lesson> {
+    async assignUsersToLesson(lessonId: string, usersIds: string[]): Promise<Lesson> {
         const lesson = await this.lessonModel.findById(lessonId)
-        lesson.students = [...lesson.students, ...studentIds]
+        lesson.users = [...lesson.users, ...usersIds]
         const result = await lesson.save()
         return result
     }

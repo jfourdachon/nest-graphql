@@ -2,14 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AssignLessonsToStudentsDto {
+input AssignLessonsToUserDto {
   lessonsIds: [ID!]!
-  studentId: ID!
+  userId: ID!
 }
 
-input AssignStudentsToLessonDto {
+input AssignUsersToLessonDto {
   lessonId: String!
-  studentsIds: [ID!]!
+  usersIds: [ID!]!
 }
 
 input CreateLessonDto {
@@ -17,12 +17,6 @@ input CreateLessonDto {
   name: String!
   startDate: String!
   students: [ID!] = []
-}
-
-input CreateStudentDto {
-  firstname: String!
-  lastname: String!
-  lessons: [ID!] = []
 }
 
 input CreateUserDto {
@@ -37,7 +31,7 @@ type Lesson {
   endDate: String!
   name: String!
   startDate: String!
-  students(populate: Boolean!): [Student!]!
+  users(populate: Boolean!): [User!]!
 }
 
 input LoginDto {
@@ -46,10 +40,10 @@ input LoginDto {
 }
 
 type Mutation {
-  assignLessonsToStudent(assignLessonsToStudentDto: AssignLessonsToStudentsDto!): Student!
-  assignStudentsToLesson(assignStudentsToLessonDto: AssignStudentsToLessonDto!): Lesson!
+  assignLessonsToUser(assignLessonsToUserDto: AssignLessonsToUserDto!): User!
+  assignUsersToLesson(assignUsersToLessonDto: AssignUsersToLessonDto!): Lesson!
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
-  createStudent(createStudentDto: CreateStudentDto!): Student!
+  createUser(createUserDto: CreateUserDto!): User!
   login(loginDto: LoginDto!): User!
   signup(createUserDto: CreateUserDto!): User!
 }
@@ -57,21 +51,14 @@ type Mutation {
 type Query {
   lesson(lessonId: String!): Lesson!
   lessons: [Lesson!]!
-  student(id: String!): Student!
-  students: [Student!]!
-  users(username: String!): User!
-}
-
-type Student {
-  _id: ID!
-  firstname: String!
-  lastname: String!
-  lessons: [Lesson!]!
+  user(id: String!): User!
+  users: [User!]!
 }
 
 type User {
   _id: ID!
   email: String!
   isVegetarian: Boolean!
+  lessons: [Lesson!]!
   username: String!
 }
