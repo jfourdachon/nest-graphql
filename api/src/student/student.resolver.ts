@@ -1,8 +1,7 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Lesson } from "src/lesson/lesson.model";
 import { LessonService } from "src/lesson/lesson.service";
-import { AssignLessonsToStudentsDto } from "./assign-lessons-to-studenst-dto";
-import { CreateStudentDto } from "./create-student.dto";
+import { AssignLessonsToStudentsDto, CreateStudentDto } from "./student.dto";
 import { Student, StudentDocument } from "./student.model";
 import { StudentService } from "./student.service";
 

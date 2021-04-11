@@ -4,11 +4,11 @@ import { GqlAuthGuard } from "src/auth/graphql-auth";
 import { GqlUser } from "src/decorators/decorators";
 import { Student } from "src/student/student.model";
 import { StudentService } from "src/student/student.service";
-import { AssignStudentsToLessonDto } from "./assign-students-to-lesson-dto";
-import { CreateLessonDto } from "./lesson.dto";
+import { AssignStudentsToLessonDto, CreateLessonDto } from "./lesson.dto";
 import { Lesson, LessonDocument } from "./lesson.model";
 import { LessonService } from "./lesson.service";
 import { Schema as MongooseSchema } from 'mongoose';
+import { User } from "src/user/user.model";
 
 
 @Resolver(of => Lesson)
@@ -35,8 +35,9 @@ export class LessonResolver {
     }
 
     @Mutation(returns => Lesson)
-    // @UseGuards(GqlAuthGuard)
-    createLesson(@Args('createLessonDto') createLessonDto: CreateLessonDto, @GqlUser() user: any,) {  //TODO return User after migrating to mongo
+    @UseGuards(GqlAuthGuard)
+    createLesson(@Args('createLessonDto') createLessonDto: CreateLessonDto, @GqlUser() user: User,) {
+        console.log({user})
         return this.lessonService.createLesson(createLessonDto)
     }
 

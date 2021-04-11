@@ -22,5 +22,13 @@ export class UserService {
         return this.userModel.findById({ _id: id });
     }
 
-    //TODO CRUD
+    async createUser(userDto, password: string): Promise<User> {
+        const user = new this.userModel({
+            email: userDto.email,
+            username: userDto.email,
+            isVegetarian: userDto.isVegetarian,
+            password
+        })
+        return user.save()
+    }
 }
