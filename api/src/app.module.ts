@@ -1,7 +1,6 @@
 import { GraphQLModule } from '@nestjs/graphql';
 import { Module } from '@nestjs/common';
 import { LessonModule } from './lesson/lesson.module';
-import { StudentModule } from './student/student.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -17,7 +16,6 @@ require('dotenv').config()
             sortSchema: true,
         }),
         LessonModule,
-        StudentModule,
         AuthModule,
         UserModule,
     ],

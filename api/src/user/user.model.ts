@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import {Document, Schema as MongooseSchema} from 'mongoose'
+import { Lesson } from "src/lesson/lesson.model";
 
 @ObjectType()
 @Schema()
@@ -23,6 +24,10 @@ export class User {
     @Field(() => Boolean)
     @Prop()
     isVegetarian: boolean
+
+    @Field(() => [Lesson])
+    @Prop({ ref: Lesson.name})
+    lessons: (String | Lesson)[]
 }
 
 export type UserDocument = User & Document

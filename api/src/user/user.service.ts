@@ -18,8 +18,12 @@ export class UserService {
         return this.userModel.findOne({ email });
     }
 
-    async findById(id: string): Promise<User> {
-        return this.userModel.findById({ _id: id });
+    async getUserById(id: string): Promise<User> {
+        return this.userModel.findById(id);
+    }
+
+    async getUsers(): Promise<User[]> {
+        return this.userModel.find().exec()
     }
 
     async createUser(userDto, password: string): Promise<User> {
@@ -29,6 +33,12 @@ export class UserService {
             isVegetarian: userDto.isVegetarian,
             password
         })
+        return user.save()
+    }
+
+    async assignLessonsToUser(userId: string, lessonsIds: string[]): Promise<User> {
+        const user = await this.userModel.findById(userId).exec()
+        user.lessons = [...user.lessons, ...lessonsIds]
         return user.save()
     }
 }

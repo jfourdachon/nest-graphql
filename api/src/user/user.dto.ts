@@ -1,5 +1,5 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsBoolean, IsEmail, MinLength } from "class-validator";
+import { Field, ID, InputType } from "@nestjs/graphql";
+import { IsBoolean, IsEmail, IsMongoId, MinLength } from "class-validator";
 
 @InputType()
 export class CreateUserDto {
@@ -19,4 +19,16 @@ export class CreateUserDto {
     @Field(() => Boolean, {defaultValue: false})
     @IsBoolean()
     isVegetarian: boolean
+}
+
+@InputType()
+export class AssignLessonsToUserDto {
+
+    @IsMongoId()	
+    @Field(type => ID)
+    userId: string
+
+    @IsMongoId({each: true})	
+    @Field(type => [ID])
+    lessonsIds: string[]
 }

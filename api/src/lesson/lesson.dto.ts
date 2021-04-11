@@ -21,14 +21,14 @@ export class CreateLessonDto {
 }
 
 @InputType()
-export class AssignStudentsToLessonDto {
+export class AssignUsersToLessonDto {
 
     @IsMongoId()	
     @Field(type => String)
     lessonId:string
 
-    @IsMongoId()	
+    @IsMongoId({each: true})	
     @Field(type => [ID])
-    studentsIds:string[]
+    usersIds:string[]
 
 }
