@@ -7,22 +7,19 @@ import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
 
-
-
 require('dotenv').config()
 
-
 @Module({
-  imports: [
-    MongooseModule.forRoot(process.env.NEST_APP_DB_URL),
-    GraphQLModule.forRoot({
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-        sortSchema: true,
-    }),
-    LessonModule,
-    StudentModule,
-    // AuthModule,
-    UserModule,
-  ],
+    imports: [
+        MongooseModule.forRoot(process.env.NEST_APP_DB_URL),
+        GraphQLModule.forRoot({
+            autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+            sortSchema: true,
+        }),
+        LessonModule,
+        StudentModule,
+        AuthModule,
+        UserModule,
+    ],
 })
-export class AppModule {}
+export class AppModule { }

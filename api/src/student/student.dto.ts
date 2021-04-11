@@ -1,6 +1,5 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { MinLength } from "class-validator";
-
+import { IsMongoId, MinLength } from "class-validator";
 
 
 @InputType()
@@ -17,4 +16,17 @@ export class CreateStudentDto {
     @Field(type => [ID], {defaultValue: []})
     lessons: string[]
 
+}
+
+
+@InputType()
+export class AssignLessonsToStudentsDto {
+
+    @IsMongoId()	
+    @Field(type => ID)
+    studentId: string
+
+    @IsMongoId({each: true})	
+    @Field(type => [ID])
+    lessonsIds: string[]
 }

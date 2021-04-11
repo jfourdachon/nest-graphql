@@ -25,6 +25,13 @@ input CreateStudentDto {
   lessons: [ID!] = []
 }
 
+input CreateUserDto {
+  email: String!
+  isVegetarian: Boolean = false
+  password: String!
+  username: String!
+}
+
 type Lesson {
   _id: ID!
   endDate: String!
@@ -44,6 +51,7 @@ type Mutation {
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createStudent(createStudentDto: CreateStudentDto!): Student!
   login(loginDto: LoginDto!): User!
+  signup(createUserDto: CreateUserDto!): User!
 }
 
 type Query {
@@ -51,6 +59,7 @@ type Query {
   lessons: [Lesson!]!
   student(id: String!): Student!
   students: [Student!]!
+  users(username: String!): User!
 }
 
 type Student {

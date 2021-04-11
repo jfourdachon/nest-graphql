@@ -7,7 +7,6 @@ import {Document, Schema as MongooseSchema} from 'mongoose'
 export class User {
 
     @Field(() => ID)
-    @Prop()
     _id: MongooseSchema.Types.ObjectId
 
     @Field(() => String)
@@ -18,7 +17,7 @@ export class User {
     @Prop()
     email: string
 
-    @Prop({select: false})
+    @Prop()
     password: string
 
     @Field(() => Boolean)

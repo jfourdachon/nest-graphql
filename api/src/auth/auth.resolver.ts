@@ -7,6 +7,7 @@ import { LoginDto, SignupDto } from './auth-dto';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
+import { CreateUserDto } from 'src/user/user.dto';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -30,28 +31,29 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
+
         const jwt = this.jwt.sign({ id: user._id });
         res.cookie('token', jwt, { httpOnly: true });
 
         return user;
     }
 
-    //TODO
-    // @Mutation(returns => User)
-    // async signup(
-    //     @Args('signupDto') signupDto: SignupDto,
-    //     @ResGql() res: Response,
-    // ) {
-    //     const emailExists = await this.userService.findByEmail(signupDto.email);
-    //     if (emailExists) {
-    //         throw Error('Email is already in use');
-    //     }
-    //     const password = await bcryptjs.hash(signupDto.password, 10);
-    //     const user = await this.authSevice.signup(signupDto, password);
+    @Mutation(returns => User)
+    async signup(
+        @Args('createUserDto') createUserDto: CreateUserDto,
+        @ResGql() res: Response,
+    ) {
+        const emailExists = await this.userService.findByEmail(createUserDto.email);
+        if (emailExists) {
+            throw Error('Email is already in use');
+        }
+        const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
+        const { password, ...userInfos } = createUserDto
+        const user = await this.userService.createUser(userInfos, hashedPassword);
 
-    //     const jwt = this.jwt.sign({ id: user.id });
-    //     res.cookie('token', jwt, { httpOnly: true });
+        const jwt = this.jwt.sign({ id: user._id });
+        res.cookie('token', jwt, { httpOnly: true });
 
-    //     return user;
-    // }
+        return user;
+    }
 }

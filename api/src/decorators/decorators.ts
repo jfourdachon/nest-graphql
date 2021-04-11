@@ -2,6 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 import { Response } from 'express';
+import { User } from 'src/user/user.model';
 
 export const ResGql = createParamDecorator(
   (data: unknown, context: ExecutionContext): Response => {
@@ -10,10 +11,8 @@ export const ResGql = createParamDecorator(
   
 );
 
-
-//TODO Put response Type as User after migrating to mongo
 export const GqlUser = createParamDecorator(
-  (data: unknown, context: ExecutionContext) => {
+  (data: unknown, context: ExecutionContext): User => {
     const ctx = GqlExecutionContext.create(context).getContext();
     return ctx.req && ctx.req.user;
   },

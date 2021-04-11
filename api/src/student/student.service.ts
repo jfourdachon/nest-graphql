@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './create-student.dto';
+import { CreateStudentDto } from './student.dto';
 import { v4 as uuid } from 'uuid'
 import { InjectModel } from '@nestjs/mongoose';
 import { Student, StudentDocument } from './student.model';
