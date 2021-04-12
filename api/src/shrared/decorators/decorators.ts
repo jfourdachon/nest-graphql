@@ -17,3 +17,10 @@ export const GqlUser = createParamDecorator(
     return ctx.req && ctx.req.user;
   },
 );
+
+export const Cookies = createParamDecorator(
+    (data: unknown, context: ExecutionContext): any => {
+      const ctx = GqlExecutionContext.create(context).getContext();
+      return ctx.req && ctx.req.cookies;
+    },
+  );

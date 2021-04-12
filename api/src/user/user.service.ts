@@ -19,7 +19,8 @@ export class UserService {
     }
 
     async getUserById(id: string): Promise<User> {
-        return this.userModel.findById(id);
+        const user = await this.userModel.findById(id).exec();
+        return user
     }
 
     async getUsers(): Promise<User[]> {
@@ -34,6 +35,20 @@ export class UserService {
             password
         })
         return user.save()
+    }
+
+   saveRefreshToken = async (id, refreshToken) => {
+        try {
+            console.log(id, refreshToken)
+            const updatedUser = await this.userModel.findById(id).exec()
+            console.log({ updatedUser })
+            updatedUser.refreshToken = refreshToken
+            console.log({ updatedUser })
+            updatedUser.save()
+            return updatedUser
+        } catch (error) {
+            console.log({error})
+        }
     }
 
     async assignLessonsToUser(userId: string, lessonsIds: string[]): Promise<User> {

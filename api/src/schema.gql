@@ -45,6 +45,7 @@ type Mutation {
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createUser(createUserDto: CreateUserDto!): User!
   login(loginDto: LoginDto!): User!
+  refreshToken: User!
   signup(createUserDto: CreateUserDto!): User!
 }
 
