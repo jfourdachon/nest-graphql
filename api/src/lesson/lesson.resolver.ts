@@ -1,11 +1,11 @@
 import { UseGuards } from "@nestjs/common";
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
-import { GqlAuthGuard } from "src/auth/graphql-auth";
-import { GqlUser } from "src/shrared/decorators/decorators";
+import { GqlAuthGuard } from "../auth/graphql-auth";
+import { GqlUser } from "../shrared/decorators/decorators";
 import { AssignUsersToLessonDto, CreateLessonDto } from "./lesson.dto";
 import { Lesson, LessonDocument } from "./lesson.model";
 import { LessonService } from "./lesson.service";
-import { User } from "src/user/user.model";
+import { User } from "../user/user.model";
 
 
 @Resolver(of => Lesson)

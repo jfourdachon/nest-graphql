@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { User } from "src/user/user.model";
+import { User } from "../user/user.model";
 
 
 @ObjectType()
@@ -25,7 +25,7 @@ export class Lesson {
     endDate: string
 
     @Field(() => [User])
-    @Prop({ref: 'user'})
+    @Prop({ref: 'User'})
     users: (string | User)[]
 
 }
