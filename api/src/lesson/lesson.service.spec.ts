@@ -1,24 +1,34 @@
-import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { async } from 'rxjs';
-import { Lesson } from './lesson.model';
+import { MongooseModule } from '@nestjs/mongoose';
+
+import { closeInMongodConnection, rootMongooseTestModule } from '../test-utils/MongooseTestModule';
+import { Lesson, LessonSchema } from './lesson.model';
 import { LessonService } from './lesson.service';
 
-describe('LessonService', () => {
-    let service: boolean;
-  
-    beforeEach(async () => {
-    //   const module: TestingModule = await Test.createTestingModule({
-    //     providers: [LessonService,
-    //         {
-    //             provide: getModelToken(Lesson.name),
-    //             useValue: catModel,
-    //           },],
-    //   }).compile();
-      service = true;
-    });
-  
-    it('should be defined', () => {
-      expect(service).toBeDefined();
-    });
+describe('SquidService', () => {
+  let service: LessonService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        rootMongooseTestModule(),
+        MongooseModule.forFeature([{ name: Lesson.name, schema: LessonSchema }]),
+      ],
+      providers: [LessonService],
+    }).compile();
+
+    service = module.get<LessonService>(LessonService);
   });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  /**
+    Write meaningful test
+  **/
+
+  afterAll(async () => {
+    await closeInMongodConnection();
+  });
+});
