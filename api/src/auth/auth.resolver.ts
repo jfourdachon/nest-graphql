@@ -8,15 +8,16 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { CreateUserDto } from 'src/user/user.dto';
-import { Token } from 'src/shrared/types';
+import { RefreshToken, Token } from 'src/shrared/types';
+import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 
 @Resolver('Auth')
 export class AuthResolver {
     constructor(
-        private readonly jwt: JwtService,
         private userService: UserService,
         private authService: AuthService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private cacheManager: RedisCacheService
     ) { }
 
     @Mutation(returns => User)
@@ -34,9 +35,9 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
-        const { accessToken, refreshToken } = this.authService.generateToken(user._id)
-        res.cookie('accessToken', accessToken, { httpOnly: true });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        const tokens = await this.authService.generateToken(user._id)
+        res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
 
 
         return user;
@@ -60,23 +61,28 @@ export class AuthResolver {
         return user;
     }
 
-    @Mutation(returns => User)
+    @Mutation(returns => RefreshToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
-        const { refreshToken } = cookie
-        const userId = await this.jwtService.decode(refreshToken)['userId'];
+        try {
+            const { accessToken, refreshToken } = cookie
+            const userId = await this.jwtService.decode(accessToken)['userId'];
 
-        const user = await this.userService.getUserById(userId)
+            const tokenFromRedis = await this.cacheManager.get(userId.toString())
+            console.log({tokenFromRedis})
+            if (tokenFromRedis === refreshToken) {
+                const newTokens = await this.authService.refreshToken(userId);
 
-        const newTokens = this.authService.refreshToken(userId);
+                res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
+                res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
 
-        this.userService.saveRefreshToken(userId, newTokens.refreshToken)
+                // const hashedRefreshToken = await bcryptjs.hash(refreshToken, 10)
+                return { isRefresh: true }
+            } else {
+                return { isRefresh: false }
+            }
+        } catch (error) {
 
-        res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
-        res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
+        }
 
-        // const hashedRefreshToken = await bcryptjs.hash(refreshToken, 10)
-
-        console.log({user})
-        return user
     }
 }

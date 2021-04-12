@@ -7,11 +7,13 @@ services:
       context: ./api
       dockerfile: Dockerfile
     volumes: 
-      - /app/node_modules
+      - /api/node_modules
       - ./api:/app
     environment: 
       - NEST_APP_DB_URL
       - NEST_JWT_SECRET
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
   nginx:
     restart: always
     build:

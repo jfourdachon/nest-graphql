@@ -14,3 +14,10 @@ export class AuthUser {
     tokens: Token
     user: User
 }
+
+
+@ObjectType()
+export class RefreshToken {
+    @Field({description: 'Is Refresh JWT provided'})
+    isRefresh: boolean
+}
