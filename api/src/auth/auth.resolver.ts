@@ -35,7 +35,7 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
-        const tokens = await this.authService.generateToken(user._id)
+        const tokens = await this.authService.generateToken({ userId: user._id })
         res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
 
@@ -68,13 +68,14 @@ export class AuthResolver {
             const userId = await this.jwtService.decode(accessToken)['userId'];
 
             const tokenFromRedis = await this.cacheManager.get(userId.toString())
-            console.log({tokenFromRedis})
+            console.log({ tokenFromRedis })
             if (tokenFromRedis === refreshToken) {
                 const newTokens = await this.authService.refreshToken(userId);
 
                 res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
                 res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
 
+                //TODO setup bcrypt operations in a new thread
                 // const hashedRefreshToken = await bcryptjs.hash(refreshToken, 10)
                 return { isRefresh: true }
             } else {
