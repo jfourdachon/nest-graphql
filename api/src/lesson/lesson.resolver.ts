@@ -1,7 +1,7 @@
 import { UseGuards } from "@nestjs/common";
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from "@nestjs/graphql";
 import { GqlAuthGuard } from "src/auth/graphql-auth";
-import { GqlUser } from "src/decorators/decorators";
+import { GqlUser } from "src/shrared/decorators/decorators";
 import { AssignUsersToLessonDto, CreateLessonDto } from "./lesson.dto";
 import { Lesson, LessonDocument } from "./lesson.model";
 import { LessonService } from "./lesson.service";
@@ -35,7 +35,7 @@ export class LessonResolver {
 
     @Mutation(returns => Lesson)
     @UseGuards(GqlAuthGuard)
-    createLesson(@Args('createLessonDto') createLessonDto: CreateLessonDto, @GqlUser() user: User,) {
+    createLesson(@Args('createLessonDto') createLessonDto: CreateLessonDto, @GqlUser() user: User) {
         return this.lessonService.createLesson(createLessonDto)
     }
 

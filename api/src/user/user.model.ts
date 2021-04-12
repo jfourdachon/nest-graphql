@@ -28,6 +28,9 @@ export class User {
     @Field(() => [Lesson])
     @Prop({ ref: Lesson.name})
     lessons: (String | Lesson)[]
+
+    @Prop()
+    refreshToken?: string
 }
 
 export type UserDocument = User & Document

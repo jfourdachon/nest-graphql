@@ -19,7 +19,8 @@ export class UserService {
     }
 
     async getUserById(id: string): Promise<User> {
-        return this.userModel.findById(id);
+        const user = await this.userModel.findById(id).exec();
+        return user
     }
 
     async getUsers(): Promise<User[]> {
@@ -35,6 +36,18 @@ export class UserService {
         })
         return user.save()
     }
+
+    //TODO Maybe don't need this method in token is only store in redis
+//    saveRefreshToken = async (id, refreshToken) => {
+//         try {
+//             const updatedUser = await this.userModel.findById(id).exec()
+//             updatedUser.refreshToken = refreshToken
+//             updatedUser.save()
+//             return updatedUser
+//         } catch (error) {
+//             console.log({error})
+//         }
+//     }
 
     async assignLessonsToUser(userId: string, lessonsIds: string[]): Promise<User> {
         const user = await this.userModel.findById(userId).exec()

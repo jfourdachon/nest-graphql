@@ -5,11 +5,11 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 
 const cookieExtractor = (req: Request): string | null => {
-  let token = null;
+  let accessToken = null;
   if (req && req.cookies) {
-    token = req.cookies.token;
+    accessToken = req.cookies.accessToken;
   }
-  return token;
+  return accessToken;
 };
 
 @Injectable()
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({
       jwtFromRequest: cookieExtractor,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: process.env.NEST_JWT_SECRET,
     });
   }
 
