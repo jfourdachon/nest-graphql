@@ -1,14 +1,14 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+  build_dir: ~/api
 jobs:
   build-and-test:
-    working_directory: ~/api
     executor:
       name: node/default
     steps:
       - checkout
-      - node/install-packages
+      - node/install-packages:
       - run:
           command: yarn test
 workflows:
