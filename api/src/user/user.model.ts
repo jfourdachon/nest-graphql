@@ -29,8 +29,14 @@ export class User {
     @Prop({ ref: 'Lesson'})
     lessons: (String | Lesson)[]
 
-    @Prop()
-    refreshToken?: string
+    // @Prop()
+    // refreshToken?: string
+
+    @Prop(() => String)
+    resetPasswordToken: string
+
+    @Prop(() => Number)
+    resetTokenPasswordExpireIn: number
 }
 
 export type UserDocument = User & Document

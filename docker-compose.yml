@@ -12,8 +12,12 @@ services:
     environment: 
       - NEST_APP_DB_URL
       - NEST_JWT_SECRET
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_CACHE_TTL
+      - REDIS_MAX_ITEM_IN_CACHE
+      - MAILGUN_API_KEY
+      - MAILGUN_DOMAIN
   nginx:
     restart: always
     build:
