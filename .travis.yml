@@ -1,6 +1,7 @@
 sudo: required
 services:
   - docker
+  - mongodb
 
 before_install:
   - docker build -t jfourdachon/nest-graphql -f ./api/Dockerfile ./api
