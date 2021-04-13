@@ -1,0 +1,29 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t jfourdachon/nest-graphql -f ./api/Dockerfile ./api
+  # to run others test
+  #- docker build jfourdachon/api-test -f ./api.Dockerfile.dec ./api
+
+script:
+  - docker run -e CI=true jfourdachon/nest-graphql yarn test
+
+after_success:
+  - docker build -t jfourdachon/nginx ./nginx
+  - docker build -t jfourdachon/api ./api
+
+  # Login to docker CLI
+  # Set docker credentials in travis.com -> project settings
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID"  --password-stdin
+
+  # Take those images and push them to docker hub
+  - docker push jfourdachon/nginx
+  - docker push jfourdachon/api
+
+# safelist
+branches:
+  only:
+  - main
+  
