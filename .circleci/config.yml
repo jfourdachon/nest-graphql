@@ -2,16 +2,17 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
+  build:
+    working_directory: ~/api
+    executor: node/default
     steps:
       - checkout
+      - node/install-npm
       - node/install-packages:
-        app-dir: ~/api
-      - run:
-          command: npm run test
+          app-dir: ~/backend_api
+          cache-path: node_modules
+          override-ci-command: npm i
 workflows:
-  build-and-test:
+  node-tests:
     jobs:
-      - build-and-test
+      - node/test
