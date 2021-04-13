@@ -3,13 +3,17 @@ import { Response } from 'express';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ResGql, Cookies, GqlUser } from '../shrared/decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './auth-dto';
+import { EmailDto, LoginDto } from './auth-dto';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { CreateUserDto } from 'src/user/user.dto';
 import { RefreshToken, Token } from 'src/shrared/types';
-import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
+import { RedisCacheService } from '../redis-cache/redis-cache.service';
+import * as crypto from 'crypto'
+
+import { MailgunService } from '@nextnm/nestjs-mailgun';
+import { EmailOptions } from '@nextnm/nestjs-mailgun'
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -17,7 +21,8 @@ export class AuthResolver {
         private userService: UserService,
         private authService: AuthService,
         private readonly jwtService: JwtService,
-        private cacheManager: RedisCacheService
+        private cacheManager: RedisCacheService,
+        private mailgunService: MailgunService
     ) { }
 
     @Mutation(returns => User)
@@ -82,8 +87,36 @@ export class AuthResolver {
                 return { isRefresh: false }
             }
         } catch (error) {
-
+            throw new Error(error)
         }
+    }
+
+    @Mutation(returns => RefreshToken)
+    async resetPasswordRequest(@Args('emailDto')emailDto: EmailDto, @ResGql() res: Response) {
+        // const user = await this.userService.findByEmail(emailDto.email)
+        // if (!user) {
+        //     throw new Error("User does not exist");
+        // }
+        // res.clearCookie('accessToken')
+        // res.clearCookie('refreshToken')
+        // await this.cacheManager.del(user._id.toString())
+
+        // const resetToken = crypto.randomBytes(32).toString("hex");
+
+        // const hashedResetToken = bcryptjs.hash(resetToken, 10)
+        const options: EmailOptions = {
+            from: 'Super User <me@samples.mailgun.org>',
+            to: 'j.fourdachon@it-students.fr',
+            subject: 'Hello world',
+            template: 'test-email',
+            'h:X-Mailgun-Variables': '{"test":"var test"}'
+          };
+
+         const mail = await this.mailgunService.sendEmail(options);
+         console.log(mail)
+
+        return {isRefresh: true}
 
     }
+
 }

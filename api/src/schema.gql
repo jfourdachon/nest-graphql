@@ -26,6 +26,10 @@ input CreateUserDto {
   username: String!
 }
 
+input EmailDto {
+  email: String!
+}
+
 type Lesson {
   _id: ID!
   endDate: String!
@@ -46,6 +50,7 @@ type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
   login(loginDto: LoginDto!): User!
   refreshToken: RefreshToken!
+  resetPasswordRequest(emailDto: EmailDto!): RefreshToken!
   signup(createUserDto: CreateUserDto!): User!
 }
 

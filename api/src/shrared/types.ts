@@ -21,3 +21,4 @@ export class RefreshToken {
     @Field({description: 'Is Refresh JWT provided'})
     isRefresh: boolean
 }
+
