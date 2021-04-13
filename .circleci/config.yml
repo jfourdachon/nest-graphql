@@ -9,7 +9,7 @@ jobs:
       - checkout
       - node/install-npm
       - node/install-packages:
-          app-dir: ~/backend_api
+          app-dir: ~/api
           cache-path: node_modules
           override-ci-command: npm i
 workflows:
