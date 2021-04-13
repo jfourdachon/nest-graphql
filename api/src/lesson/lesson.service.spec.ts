@@ -5,7 +5,7 @@ import { closeInMongodConnection, rootMongooseTestModule } from '../test-utils/M
 import { Lesson, LessonSchema } from './lesson.model';
 import { LessonService } from './lesson.service';
 
-describe('SquidService', () => {
+describe('LessonService', () => {
   let service: LessonService;
 
   beforeEach(async () => {
