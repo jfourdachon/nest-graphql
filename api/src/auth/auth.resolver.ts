@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ResGql, Cookies, GqlUser } from '../shrared/decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
-import { EmailDto, LoginDto } from './auth-dto';
+import { EmailDto, LoginDto, resetPasswordDto } from './auth-dto';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
@@ -73,7 +73,6 @@ export class AuthResolver {
             const userId = await this.jwtService.decode(accessToken)['userId'];
 
             const tokenFromRedis = await this.cacheManager.get(userId.toString())
-            console.log({ tokenFromRedis })
             if (tokenFromRedis === refreshToken) {
                 const newTokens = await this.authService.refreshToken(userId);
 
@@ -92,31 +91,64 @@ export class AuthResolver {
     }
 
     @Mutation(returns => RefreshToken)
-    async resetPasswordRequest(@Args('emailDto')emailDto: EmailDto, @ResGql() res: Response) {
-        // const user = await this.userService.findByEmail(emailDto.email)
-        // if (!user) {
-        //     throw new Error("User does not exist");
-        // }
-        // res.clearCookie('accessToken')
-        // res.clearCookie('refreshToken')
-        // await this.cacheManager.del(user._id.toString())
+    async resetPasswordRequest(@Args('emailDto') emailDto: EmailDto, @ResGql() res: Response) {
+        const user = await this.userService.findByEmail(emailDto.email)
+        if (!user) {
+            throw new Error("User does not exist");
+        }
+        res.clearCookie('accessToken')
+        res.clearCookie('refreshToken')
+        await this.cacheManager.del(user._id.toString())
 
-        // const resetToken = crypto.randomBytes(32).toString("hex");
+        const resetPasswordToken = this.jwtService.sign({ userId: user._id }, {
+            expiresIn: '15m',
+        })
 
-        // const hashedResetToken = bcryptjs.hash(resetToken, 10)
+        const hashedResetToken = await  bcryptjs.hash(resetPasswordToken, 10)
+
+        //TODO manage ttl in config -> 15 min
+        this.cacheManager.set(user._id.toString(), hashedResetToken, {ttl: 1000})
+
+        //TODO Deep linking App
+        const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
         const options: EmailOptions = {
             from: 'Super User <me@samples.mailgun.org>',
-            to: 'j.fourdachon@it-students.fr',
-            subject: 'Hello world',
+            to: emailDto.email,
+            subject: 'Rest password',
             template: 'test-email',
-            'h:X-Mailgun-Variables': '{"test":"var test"}'
-          };
+            'h:X-Mailgun-Variables': `{"link": "${link}"}`
+        };
+        this.mailgunService.sendEmail(options);
 
-         const mail = await this.mailgunService.sendEmail(options);
-         console.log(mail)
-
-        return {isRefresh: true}
+        return { isRefresh: true }
 
     }
 
+    @Mutation(returns => RefreshToken)
+    async resetPassword(@Args('resetPasswordDto') resetPasswordDto: resetPasswordDto,  @ResGql() res: Response) {
+
+        const { userId, password, confirmPassword, token } = resetPasswordDto
+        if (password !== confirmPassword) {
+            throw new Error('Password does not match confirm password')
+        }
+
+        const tokenFromRedis = await this.cacheManager.get(userId.toString())
+
+        const isValid = await bcryptjs.compare(token, tokenFromRedis)
+        if (!isValid) {
+            throw new Error('Token is invalid')
+        }
+
+        const hashedPassword = await bcryptjs.hash(password, 10);
+
+        await this.userService.updateUser({ id: userId, password: hashedPassword })
+
+        const newTokens = await this.authService.refreshToken(userId);
+
+        res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
+        res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
+
+        return { isRefresh: true }
+
+    }
 }
