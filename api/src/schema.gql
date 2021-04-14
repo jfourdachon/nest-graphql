@@ -50,6 +50,7 @@ type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
   login(loginDto: LoginDto!): User!
   refreshToken: RefreshToken!
+  resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(emailDto: EmailDto!): RefreshToken!
   signup(createUserDto: CreateUserDto!): User!
 }
@@ -72,4 +73,11 @@ type User {
   isVegetarian: Boolean!
   lessons: [Lesson!]!
   username: String!
+}
+
+input resetPasswordDto {
+  confirmPassword: String!
+  password: String!
+  token: String!
+  userId: String!
 }

@@ -51,7 +51,8 @@ export class AuthService {
             expiresIn: '5d',
         });
 
-        await this.cacheManager.set(id.toString() , refreshToken);
+        //TODO manage ttl
+        await this.cacheManager.set(id.toString() , refreshToken, {ttl:10000});
         
         // Maybe overkill
         // this.userService.saveRefreshToken(id, refreshToken)
