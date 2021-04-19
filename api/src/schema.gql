@@ -35,7 +35,7 @@ type Lesson {
   endDate: String!
   name: String!
   startDate: String!
-  users(populate: Boolean!): [User!]!
+  users: [User!]!
 }
 
 input LoginDto {

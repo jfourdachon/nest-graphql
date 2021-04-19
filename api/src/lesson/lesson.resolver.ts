@@ -24,13 +24,9 @@ export class LessonResolver {
     }
 
     @ResolveField()
-    async users(@Parent() lesson: LessonDocument, @Args('populate') populate: boolean) {
-        if (populate) {
-            await lesson.populate({ path: 'users', model: User.name }).execPopulate()
-            return lesson.users
-        } else {
-            return lesson.users = []
-        }
+    async users(@Parent() Lesson: LessonDocument) {
+            await Lesson.populate({ path: 'users', model: User.name }).execPopulate()
+            return Lesson.users
     }
 
     @Mutation(returns => Lesson)
