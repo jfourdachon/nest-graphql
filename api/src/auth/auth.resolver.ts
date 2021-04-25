@@ -7,7 +7,7 @@ import { ForgotPasswordRequestDto, LoginDto, resetPasswordDto } from './auth-dto
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
-import { CreateUserDto } from 'src/user/user.dto';
+import { SignupDto } from 'src/user/user.dto';
 import { RefreshToken, ForgotPasswordRequest } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as crypto from 'crypto'
@@ -51,7 +51,7 @@ export class AuthResolver {
 
     @Mutation(returns => User)
     async signup(
-        @Args('signupDto') signupDto: CreateUserDto,
+        @Args('signupDto') signupDto: SignupDto,
         @ResGql() res: Response,
     ) {
         const emailExists = await this.userService.findByEmail(signupDto.email);

@@ -19,13 +19,6 @@ input CreateLessonDto {
   students: [ID!] = []
 }
 
-input CreateUserDto {
-  email: String!
-  isVegetarian: Boolean = false
-  password: String!
-  username: String!
-}
-
 type ForgotPasswordRequest {
   """Is Refresh JWT provided"""
   isRequestAccepted: Boolean!
@@ -52,12 +45,12 @@ type Mutation {
   assignLessonsToUser(assignLessonsToUserDto: AssignLessonsToUserDto!): User!
   assignUsersToLesson(assignUsersToLessonDto: AssignUsersToLessonDto!): Lesson!
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
-  createUser(createUserDto: CreateUserDto!): User!
+  createUser(signupDto: SignupDto!): User!
   login(loginDto: LoginDto!): User!
   refreshToken: RefreshToken!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(ForgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
-  signup(signupDto: CreateUserDto!): User!
+  signup(signupDto: SignupDto!): User!
 }
 
 type Query {
@@ -70,6 +63,13 @@ type Query {
 type RefreshToken {
   """Is Refresh JWT provided"""
   isRefresh: Boolean!
+}
+
+input SignupDto {
+  email: String!
+  isVegetarian: Boolean = false
+  password: String!
+  username: String!
 }
 
 type User {
