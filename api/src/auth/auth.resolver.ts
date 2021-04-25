@@ -3,12 +3,12 @@ import { Response } from 'express';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ResGql, Cookies, GqlUser } from '../shrared/decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
-import { EmailDto, LoginDto, resetPasswordDto } from './auth-dto';
+import { ForgotPasswordRequestDto, LoginDto, resetPasswordDto } from './auth-dto';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { CreateUserDto } from 'src/user/user.dto';
-import { RefreshToken, Token } from 'src/shrared/types';
+import { RefreshToken, ForgotPasswordRequest } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as crypto from 'crypto'
 
@@ -43,6 +43,7 @@ export class AuthResolver {
         const tokens = await this.authService.generateToken({ userId: user._id })
         res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+        console.log({ tokens, user })
 
 
         return user;
@@ -50,18 +51,19 @@ export class AuthResolver {
 
     @Mutation(returns => User)
     async signup(
-        @Args('createUserDto') createUserDto: CreateUserDto,
+        @Args('signupDto') signupDto: CreateUserDto,
         @ResGql() res: Response,
     ) {
-        const emailExists = await this.userService.findByEmail(createUserDto.email);
+        const emailExists = await this.userService.findByEmail(signupDto.email);
         if (emailExists) {
             throw Error('Email is already in use');
         }
 
-        const { tokens, user } = await this.authService.signup(createUserDto)
+        const { tokens, user } = await this.authService.signup(signupDto)
 
         res.cookie('token', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+        console.log({ tokens, user })
 
         return user;
     }
@@ -90,42 +92,47 @@ export class AuthResolver {
         }
     }
 
-    @Mutation(returns => RefreshToken)
-    async resetPasswordRequest(@Args('emailDto') emailDto: EmailDto, @ResGql() res: Response) {
-        const user = await this.userService.findByEmail(emailDto.email)
-        if (!user) {
-            throw new Error("User does not exist");
+    @Mutation(returns => ForgotPasswordRequest)
+    async resetPasswordRequest(@Args('ForgotPasswordRequestDto') forgotPasswordRequestDto: ForgotPasswordRequestDto, @GqlUser() user: User, @ResGql() res: Response) {
+        try {
+            console.log({ user })
+            // const user = await this.userService.findByEmail(emailDto.email)
+            if (!user) {
+                throw new Error("User does not exist");
+            }
+            res.clearCookie('accessToken')
+            res.clearCookie('refreshToken')
+            await this.cacheManager.del(user._id.toString())
+
+            const resetPasswordToken = this.jwtService.sign({ userId: user._id }, {
+                expiresIn: '15m',
+            })
+
+            const hashedResetToken = await bcryptjs.hash(resetPasswordToken, 10)
+
+            //TODO manage ttl in config -> 15 min
+            this.cacheManager.set(user._id.toString(), hashedResetToken, { ttl: 1000 })
+
+            //TODO Deep linking App
+            const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
+            const options: EmailOptions = {
+                from: 'Super User <me@samples.mailgun.org>',
+                to: forgotPasswordRequestDto.email,
+                subject: 'Rest password',
+                template: 'test-email',
+                'h:X-Mailgun-Variables': `{"link": "${link}"}`
+            };
+            this.mailgunService.sendEmail(options);
+
+            return { isRequestAccepted: true }
+        } catch (error) {
+            throw new Error(error)
         }
-        res.clearCookie('accessToken')
-        res.clearCookie('refreshToken')
-        await this.cacheManager.del(user._id.toString())
-
-        const resetPasswordToken = this.jwtService.sign({ userId: user._id }, {
-            expiresIn: '15m',
-        })
-
-        const hashedResetToken = await  bcryptjs.hash(resetPasswordToken, 10)
-
-        //TODO manage ttl in config -> 15 min
-        this.cacheManager.set(user._id.toString(), hashedResetToken, {ttl: 1000})
-
-        //TODO Deep linking App
-        const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
-        const options: EmailOptions = {
-            from: 'Super User <me@samples.mailgun.org>',
-            to: emailDto.email,
-            subject: 'Rest password',
-            template: 'test-email',
-            'h:X-Mailgun-Variables': `{"link": "${link}"}`
-        };
-        this.mailgunService.sendEmail(options);
-
-        return { isRefresh: true }
 
     }
 
     @Mutation(returns => RefreshToken)
-    async resetPassword(@Args('resetPasswordDto') resetPasswordDto: resetPasswordDto,  @ResGql() res: Response) {
+    async resetPassword(@Args('resetPasswordDto') resetPasswordDto: resetPasswordDto, @ResGql() res: Response) {
 
         const { userId, password, confirmPassword, token } = resetPasswordDto
         if (password !== confirmPassword) {
@@ -147,6 +154,7 @@ export class AuthResolver {
 
         res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
+
 
         return { isRefresh: true }
 

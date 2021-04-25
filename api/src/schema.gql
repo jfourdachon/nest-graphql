@@ -26,7 +26,12 @@ input CreateUserDto {
   username: String!
 }
 
-input EmailDto {
+type ForgotPasswordRequest {
+  """Is Refresh JWT provided"""
+  isRequestAccepted: Boolean!
+}
+
+input ForgotPasswordRequestDto {
   email: String!
 }
 
@@ -51,8 +56,8 @@ type Mutation {
   login(loginDto: LoginDto!): User!
   refreshToken: RefreshToken!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
-  resetPasswordRequest(emailDto: EmailDto!): RefreshToken!
-  signup(createUserDto: CreateUserDto!): User!
+  resetPasswordRequest(ForgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
+  signup(signupDto: CreateUserDto!): User!
 }
 
 type Query {
