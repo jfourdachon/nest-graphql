@@ -2,7 +2,7 @@ import { Field, ID, InputType } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsJWT, IsMongoId, IsOptional, MinLength } from "class-validator";
 
 @InputType()
-export class CreateUserDto {
+export class SignupDto {
 
     @Field(() => String)
     @IsEmail()

@@ -20,7 +20,6 @@ import { ConfigService } from '@nestjs/config';
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
               const mailgunConfig = configService.get('mailgun');
-              console.log(mailgunConfig)
               return {
                 DOMAIN: mailgunConfig.domain,
                 API_KEY: mailgunConfig.apiKey,

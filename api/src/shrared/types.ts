@@ -22,3 +22,10 @@ export class RefreshToken {
     isRefresh: boolean
 }
 
+@ObjectType()
+export class ForgotPasswordRequest {
+    @Field({description: 'Is Refresh JWT provided'})
+    isRequestAccepted: boolean
+}
+
+

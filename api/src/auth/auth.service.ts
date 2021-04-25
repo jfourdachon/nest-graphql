@@ -4,7 +4,7 @@ import * as bcryptjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { AuthUser, Token } from 'src/shrared/types';
 import { UserService } from '../user/user.service';
-import { CreateUserDto } from 'src/user/user.dto';
+import { SignupDto } from 'src/user/user.dto';
 import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 
 @Injectable()
@@ -25,11 +25,11 @@ export class AuthService {
         }
     }
 
-    async signup(createUserDto: CreateUserDto): Promise<AuthUser> {
+    async signup(signupDto: SignupDto): Promise<AuthUser> {
 
         try {
-            const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
-            const { password, ...userInfos } = createUserDto
+            const hashedPassword = await bcryptjs.hash(signupDto.password, 10);
+            const { password, ...userInfos } = signupDto
             const user = await this.userService.createUser(userInfos, hashedPassword);
 
             const tokens = await this.generateToken(user._id)

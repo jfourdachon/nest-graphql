@@ -1,6 +1,6 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Lesson } from "../lesson/lesson.model";
-import { AssignLessonsToUserDto, CreateUserDto } from "./user.dto";
+import { AssignLessonsToUserDto, SignupDto } from "./user.dto";
 import { User, UserDocument } from "./user.model";
 import { UserService } from "./user.service";
 import * as bcryptjs from 'bcryptjs';
@@ -33,14 +33,14 @@ export class UserResolver {
     }
 
     @Mutation(returns => User)
-    async createUser(@Args('createUserDto') createUserDto: CreateUserDto) {
+    async createUser(@Args('signupDto') signupDto: SignupDto) {
        
-        const emailExists = await this.userService.findByEmail(createUserDto.email);
+        const emailExists = await this.userService.findByEmail(signupDto.email);
         if (emailExists) {
             throw Error('Email is already in use');
         }
-        const hashedPassword = await bcryptjs.hash(createUserDto.password, 10);
-        const { password, ...userInfos } = createUserDto
+        const hashedPassword = await bcryptjs.hash(signupDto.password, 10);
+        const { password, ...userInfos } = signupDto
         const user = await this.userService.createUser(userInfos, hashedPassword);
         return user
     }

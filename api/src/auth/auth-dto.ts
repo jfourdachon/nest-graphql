@@ -13,18 +13,7 @@ export class LoginDto {
 }
 
 @InputType()
-export class SignupDto {
-
-    @Field()
-    @IsEmail()
-    email: string
-
-    @Field()
-    password: string
-}
-
-@InputType()
-export class EmailDto {
+export class ForgotPasswordRequestDto {
 
     @Field()
     @IsEmail()
