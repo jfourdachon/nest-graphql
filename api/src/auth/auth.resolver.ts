@@ -93,9 +93,9 @@ export class AuthResolver {
     }
 
     @Mutation(returns => ForgotPasswordRequest)
-    async resetPasswordRequest(@Args('ForgotPasswordRequestDto') forgotPasswordRequestDto: ForgotPasswordRequestDto, @GqlUser() user: User, @ResGql() res: Response) {
+    async resetPasswordRequest(@Args('forgotPasswordRequestDto') forgotPasswordRequestDto: ForgotPasswordRequestDto, @ResGql() res: Response) {
         try {
-            console.log({ user })
+            const user = await this.userService.findByEmail(forgotPasswordRequestDto.email);
             // const user = await this.userService.findByEmail(emailDto.email)
             if (!user) {
                 throw new Error("User does not exist");
