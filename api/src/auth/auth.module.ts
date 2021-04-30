@@ -23,8 +23,7 @@ import { ConfigService } from '@nestjs/config';
               return {
                 DOMAIN: mailgunConfig.domain,
                 API_KEY: mailgunConfig.apiKey,
-                //TODO upgrade to test EU region
-                // HOST: 'api.eu.mailgun.net', // default: 'api.mailgun.net'. Note that if you are using the EU region the host should be set to 'api.eu.mailgun.net'
+                HOST: 'api.eu.mailgun.net', // default: 'api.mailgun.net'. Note that if you are using the EU region the host should be set to 'api.eu.mailgun.net'
               };
             },
           }),
