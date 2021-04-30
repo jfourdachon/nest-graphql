@@ -116,12 +116,13 @@ export class AuthResolver {
             //TODO Deep linking App
             const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
             const options: EmailOptions = {
-                from: 'Super User <me@samples.mailgun.org>',
+                from: 'Hello <no-reply@jHello-world.com>',
                 to: forgotPasswordRequestDto.email,
-                subject: 'Rest password',
-                template: 'test-email',
+                subject: 'Reset password',
+                template: 'reset-password-request',
                 'h:X-Mailgun-Variables': `{"link": "${link}"}`
             };
+
             this.mailgunService.sendEmail(options);
 
             return { isRequestAccepted: true }
