@@ -80,7 +80,7 @@ export class AuthResolver {
         };
     }
 
-    @Mutation(returns => AccessToken)
+    @Query(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
             const { accessToken, refreshToken } = cookie

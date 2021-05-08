@@ -37,14 +37,14 @@ export class SignupDto {
     @MinLength(5)
     password: string
 
-    @Field(() => SEX, { defaultValue: SEX.MALE })
+    @Field(() => String, { defaultValue: SEX.MALE })
     @IsNotEmpty()
     @IsEnum(SEX)
-    sex: SEX
+    sex: string
 
-    @Field(() => OBJECTIVE, { defaultValue: OBJECTIVE.NULL })
+    @Field(() => String, { defaultValue: OBJECTIVE.NULL })
     @IsEnum(OBJECTIVE)
-    objective: OBJECTIVE
+    objective: string
 
     @Field(() => Number)
     @IsNumber()
@@ -54,7 +54,7 @@ export class SignupDto {
     @IsNumber()
     weight: number
 
-    @Field(() => DIET, { defaultValue: DIET.FLEX })
+    @Field(() => String, { defaultValue: DIET.FLEX })
     @IsEnum(DIET)
     diet: string
 
@@ -93,10 +93,10 @@ export class UpdateUserDto {
     @MinLength(5)
     password?: string
 
-    @Field(() => SEX, { defaultValue: SEX.MALE })
+    @Field(() => String, { defaultValue: SEX.MALE })
     @IsOptional()
     @IsEnum(SEX)
-    sex?: SEX
+    sex?: string
 
     @Field(() => OBJECTIVE, { defaultValue: OBJECTIVE.NULL })
     @IsOptional()
