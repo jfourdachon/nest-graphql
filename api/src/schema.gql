@@ -79,10 +79,14 @@ input SignupDto {
 
 type User {
   _id: ID!
+  diet: String!
   email: String!
-  isVegetarian: Boolean!
+  height: Float!
   lessons: [Lesson!]!
+  objective: String!
+  sex: String!
   username: String!
+  weight: Float!
 }
 
 input resetPasswordDto {
