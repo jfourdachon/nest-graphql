@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { Args } from '@nestjs/graphql';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { UpdateUserDto } from './user.dto';
 import { User, UserDocument } from './user.model';
 
@@ -11,6 +11,10 @@ import { User, UserDocument } from './user.model';
 export class UserService {
 
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+
+    async findById(id: ObjectId): Promise<User> {
+        return this.userModel.findById(id);
+    }
 
     async findByUsername(username: string): Promise<User> {
         return this.userModel.findOne({ username });

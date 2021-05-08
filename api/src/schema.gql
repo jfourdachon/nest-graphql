@@ -58,6 +58,7 @@ type Query {
   lessons: [Lesson!]!
   user(id: String!): User!
   users: [User!]!
+  whoAmI: User!
 }
 
 type RefreshToken {
