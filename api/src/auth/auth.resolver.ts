@@ -1,6 +1,6 @@
 import * as bcryptjs from 'bcryptjs';
 import { Response } from 'express';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ResGql, Cookies, GqlUser } from '../shrared/decorators/decorators';
 import { JwtService } from '@nestjs/jwt';
 import { ForgotPasswordRequestDto, LoginDto, resetPasswordDto } from './auth-dto';
@@ -8,12 +8,14 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { SignupDto } from 'src/user/user.dto';
-import { RefreshToken, ForgotPasswordRequest } from 'src/shrared/types';
+import { RefreshToken, ForgotPasswordRequest, AccessToken } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as crypto from 'crypto'
 
 import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { EmailOptions } from '@nextnm/nestjs-mailgun'
+import { GqlAuthGuard } from './graphql-auth';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -25,7 +27,14 @@ export class AuthResolver {
         private mailgunService: MailgunService
     ) { }
 
-    @Mutation(returns => User)
+
+    @Query(returns => User)
+    @UseGuards(GqlAuthGuard)
+    whoAmI(@GqlUser() user: User) {
+        return this.userService.findById(user._id.toString());
+    }
+
+    @Mutation(returns => AccessToken)
     async login(
         @Args('loginDto') { email, password }: LoginDto,
         @ResGql() res: Response,
@@ -41,15 +50,17 @@ export class AuthResolver {
         }
 
         const tokens = await this.authService.generateToken({ userId: user._id })
-        res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
+        // res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
         console.log({ tokens, user })
 
 
-        return user;
+        return {
+            token: tokens.accessToken
+        };
     }
 
-    @Mutation(returns => User)
+    @Mutation(returns => AccessToken)
     async signup(
         @Args('signupDto') signupDto: SignupDto,
         @ResGql() res: Response,
@@ -61,14 +72,15 @@ export class AuthResolver {
 
         const { tokens, user } = await this.authService.signup(signupDto)
 
-        res.cookie('token', tokens.accessToken, { httpOnly: true });
+        // res.cookie('token', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
-        console.log({ tokens, user })
 
-        return user;
+        return {
+            token: tokens.accessToken
+        };
     }
 
-    @Mutation(returns => RefreshToken)
+    @Mutation(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
             const { accessToken, refreshToken } = cookie
@@ -78,14 +90,16 @@ export class AuthResolver {
             if (tokenFromRedis === refreshToken) {
                 const newTokens = await this.authService.refreshToken(userId);
 
-                res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
+                // res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
                 res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
 
                 //TODO setup bcrypt operations in a new thread
                 // const hashedRefreshToken = await bcryptjs.hash(refreshToken, 10)
-                return { isRefresh: true }
+                return {
+                    token: newTokens.accessToken
+                };
             } else {
-                return { isRefresh: false }
+                throw new Error('Refresh token don\'t match')
             }
         } catch (error) {
             throw new Error(error)
@@ -113,7 +127,7 @@ export class AuthResolver {
             //TODO manage ttl in config -> 15 min
             this.cacheManager.set(user._id.toString(), hashedResetToken, { ttl: 1000 })
 
-            //TODO Deep linking App
+            //TODO Deep linking App or Linkto website or redirect to API that redirect to APP (for test)
             const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
             const options: EmailOptions = {
                 from: 'Hello <no-reply@jHello-world.com>',
@@ -153,11 +167,13 @@ export class AuthResolver {
 
         const newTokens = await this.authService.refreshToken(userId);
 
-        res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
+        // res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
 
 
-        return { isRefresh: true }
+        return {
+            token: newTokens.accessToken
+        };
 
     }
 }

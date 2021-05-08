@@ -1,5 +1,26 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { IsBoolean, IsEmail, IsJWT, IsMongoId, IsOptional, MinLength } from "class-validator";
+import { IsBoolean, IsEmail, IsJWT, IsMongoId, IsOptional, MinLength, IsNotEmpty, IsInt, IsNumber, IsEnum } from "class-validator";
+
+
+
+enum DIET {
+    FLEX = 'Flexitarian',
+    VEGETARIAN = 'vegetarian',
+    VEGAN = 'Vegan',
+    OTHER = 'Other'
+}
+
+enum SEX {
+    MALE = 'Male',
+    FEMALE = 'Female'
+}
+
+
+enum OBJECTIVE {
+    UP = 'Up',
+    DOWN = 'Down',
+    NULL = 'Null',
+}
 
 @InputType()
 export class SignupDto {
@@ -16,9 +37,38 @@ export class SignupDto {
     @MinLength(5)
     password: string
 
+    @Field(() => SEX, { defaultValue: SEX.MALE })
+    @IsNotEmpty()
+    @IsEnum(SEX)
+    sex: SEX
+
+    @Field(() => OBJECTIVE, { defaultValue: OBJECTIVE.NULL })
+    @IsEnum(OBJECTIVE)
+    objective: OBJECTIVE
+
+    @Field(() => Number)
+    @IsNumber()
+    height: number
+
+    @Field(() => Number)
+    @IsNumber()
+    weight: number
+
+    @Field(() => DIET, { defaultValue: DIET.FLEX })
+    @IsEnum(DIET)
+    diet: string
+
     @Field(() => Boolean, {defaultValue: false})
-    @IsBoolean()
-    isVegetarian: boolean
+    @IsOptional()
+    isPremium: boolean
+
+    @Field(() => Date)
+    @IsOptional()
+    PremiumCreatedAt: Date
+
+    @Field(() => Date)
+    @IsOptional()
+    PremiumUpdatedAt: Date
 }
 
 @InputType()
@@ -43,21 +93,52 @@ export class UpdateUserDto {
     @MinLength(5)
     password?: string
 
+    @Field(() => SEX, { defaultValue: SEX.MALE })
+    @IsOptional()
+    @IsEnum(SEX)
+    sex?: SEX
+
+    @Field(() => OBJECTIVE, { defaultValue: OBJECTIVE.NULL })
+    @IsOptional()
+    @IsEnum(OBJECTIVE)
+    objective?: OBJECTIVE
+
+    @Field(() => Number)
+    @IsOptional()
+    @IsNumber()
+    height?: number
+
+    @Field(() => Number)
+    @IsOptional()
+    @IsNumber()
+    weight?: number
+
+    @Field(() => DIET, { defaultValue: DIET.FLEX })
+    @IsOptional()
+    @IsEnum(DIET)
+    diet?: string
+
     @Field(() => Boolean, {defaultValue: false})
     @IsOptional()
-    @IsBoolean()
-    isVegetarian?: boolean
+    isPremium?: boolean
 
+    @Field(() => Date)
+    @IsOptional()
+    PremiumCreatedAt?: Date
+
+    @Field(() => Date)
+    @IsOptional()
+    PremiumUpdatedAt?: Date
 }
 
 @InputType()
 export class AssignLessonsToUserDto {
 
-    @IsMongoId()	
+    @IsMongoId()
     @Field(type => ID)
     userId: string
 
-    @IsMongoId({each: true})	
+    @IsMongoId({ each: true })
     @Field(type => [ID])
     lessonsIds: string[]
 }

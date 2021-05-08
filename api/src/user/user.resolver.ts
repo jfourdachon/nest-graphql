@@ -4,6 +4,7 @@ import { AssignLessonsToUserDto, SignupDto } from "./user.dto";
 import { User, UserDocument } from "./user.model";
 import { UserService } from "./user.service";
 import * as bcryptjs from 'bcryptjs';
+import { ObjectId } from "mongoose";
 
 
 @Resolver(of => User)
@@ -14,11 +15,6 @@ export class UserResolver {
     @Query(returns => User)
     users(@Args('username')username: string) {
         return this.userService.findByUsername(username)
-    }
-
-    @Query(returns => User, { name: 'user' })
-    getUserById(@Args('id') id: string) {
-        return this.userService.getUserById(id)
     }
 
     @Query(returns => [User], { name: 'users' })

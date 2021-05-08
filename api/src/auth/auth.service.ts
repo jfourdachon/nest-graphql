@@ -6,6 +6,8 @@ import { AuthUser, Token } from 'src/shrared/types';
 import { UserService } from '../user/user.service';
 import { SignupDto } from 'src/user/user.dto';
 import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
+import mongoose, { Types } from 'mongoose'
+import { Schema } from '@nestjs/mongoose';
 
 @Injectable()
 export class AuthService {
@@ -13,9 +15,9 @@ export class AuthService {
     }
 
 
-    async validate({ id }) {
+    async validate({ userId }) {
         try {
-        const user = await this.userService.getUserById(id);
+        const user = await this.userService.findById(userId);
         if (!user) {
             throw Error('Authenticate validation error');
         }
@@ -43,12 +45,12 @@ export class AuthService {
     }
 
     async generateToken(id): Promise<Token> {
-        const accessToken = this.jwtService.sign({ userId: id }, {
-            expiresIn: '5s',
+        const accessToken = this.jwtService.sign(id, {
+            expiresIn: '20m',
         });
 
-        const refreshToken = this.jwtService.sign({ userId: id }, {
-            expiresIn: '5d',
+        const refreshToken = this.jwtService.sign(id, {
+            expiresIn: '30d',
         });
 
         //TODO manage ttl

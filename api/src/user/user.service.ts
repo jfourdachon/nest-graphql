@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { Args } from '@nestjs/graphql';
 import { InjectModel } from '@nestjs/mongoose';
+import { ObjectId } from 'bson';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from './user.dto';
 import { User, UserDocument } from './user.model';
@@ -12,17 +13,16 @@ export class UserService {
 
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
+    async findById(id: string): Promise<User> {
+        return this.userModel.findById({_id: id}).exec();
+    }
+
     async findByUsername(username: string): Promise<User> {
         return this.userModel.findOne({ username });
     }
 
     async findByEmail(email: string): Promise<User> {
         const user = await this.userModel.findOne({ email });
-        return user
-    }
-
-    async getUserById(id: string): Promise<User> {
-        const user = await this.userModel.findById(id).exec();
         return user
     }
 

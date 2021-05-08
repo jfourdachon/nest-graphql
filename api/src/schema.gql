@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AccessToken {
+  """JWT access token"""
+  token: String!
+}
+
 input AssignLessonsToUserDto {
   lessonsIds: [ID!]!
   userId: ID!
@@ -46,18 +51,18 @@ type Mutation {
   assignUsersToLesson(assignUsersToLessonDto: AssignUsersToLessonDto!): Lesson!
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createUser(signupDto: SignupDto!): User!
-  login(loginDto: LoginDto!): User!
-  refreshToken: RefreshToken!
+  login(loginDto: LoginDto!): AccessToken!
+  refreshToken: AccessToken!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(forgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
-  signup(signupDto: SignupDto!): User!
+  signup(signupDto: SignupDto!): AccessToken!
 }
 
 type Query {
   lesson(lessonId: String!): Lesson!
   lessons: [Lesson!]!
-  user(id: String!): User!
   users: [User!]!
+  whoAmI: User!
 }
 
 type RefreshToken {
@@ -74,10 +79,14 @@ input SignupDto {
 
 type User {
   _id: ID!
+  diet: String!
   email: String!
-  isVegetarian: Boolean!
+  height: Float!
   lessons: [Lesson!]!
+  objective: String!
+  sex: String!
   username: String!
+  weight: Float!
 }
 
 input resetPasswordDto {
