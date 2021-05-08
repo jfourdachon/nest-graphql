@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { SignupDto } from 'src/user/user.dto';
-import { RefreshToken, ForgotPasswordRequest } from 'src/shrared/types';
+import { RefreshToken, ForgotPasswordRequest, AccessToken } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as crypto from 'crypto'
 
@@ -31,10 +31,10 @@ export class AuthResolver {
     @Query(returns => User)
     @UseGuards(GqlAuthGuard)
     whoAmI(@GqlUser() user: User) {
-        return this.userService.findById(user._id);
+        return this.userService.findById(user._id.toString());
     }
 
-    @Mutation(returns => User)
+    @Mutation(returns => AccessToken)
     async login(
         @Args('loginDto') { email, password }: LoginDto,
         @ResGql() res: Response,
@@ -60,7 +60,7 @@ export class AuthResolver {
         };
     }
 
-    @Mutation(returns => User)
+    @Mutation(returns => AccessToken)
     async signup(
         @Args('signupDto') signupDto: SignupDto,
         @ResGql() res: Response,
@@ -80,7 +80,7 @@ export class AuthResolver {
         };
     }
 
-    @Mutation(returns => RefreshToken)
+    @Mutation(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
             const { accessToken, refreshToken } = cookie
