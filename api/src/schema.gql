@@ -24,6 +24,11 @@ input CreateLessonDto {
   students: [ID!] = []
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type ForgotPasswordRequest {
   """Is Refresh JWT provided"""
   isRequestAccepted: Boolean!
@@ -52,7 +57,6 @@ type Mutation {
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createUser(signupDto: SignupDto!): User!
   login(loginDto: LoginDto!): AccessToken!
-  refreshToken: AccessToken!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(forgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
   signup(signupDto: SignupDto!): AccessToken!
@@ -61,6 +65,7 @@ type Mutation {
 type Query {
   lesson(lessonId: String!): Lesson!
   lessons: [Lesson!]!
+  refreshToken: AccessToken!
   users: [User!]!
   whoAmI: User!
 }
@@ -71,17 +76,29 @@ type RefreshToken {
 }
 
 input SignupDto {
+  PremiumCreatedAt: DateTime!
+  PremiumUpdatedAt: DateTime!
+  diet: String = "Flexitarian"
   email: String!
-  isVegetarian: Boolean = false
+  height: Float!
+  isPremium: Boolean = false
+  objective: String = "Null"
   password: String!
+  sex: String = "Male"
   username: String!
+  weight: Float!
 }
 
 type User {
+  PremiumCreatedAt: DateTime!
+  PremiumHistory: DateTime!
+  PremiumTerminatedAt: DateTime!
+  PremiumUpdatedAt: DateTime!
   _id: ID!
   diet: String!
   email: String!
   height: Float!
+  isPremium: Boolean!
   lessons: [Lesson!]!
   objective: String!
   sex: String!
