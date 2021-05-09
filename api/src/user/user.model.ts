@@ -56,24 +56,15 @@ export class User {
 
     @Field(() => Date)
     @Prop()
-    PremiumTerminatedAt?: Date
+    PremiumTerminatedAt: Date
 
     @Field(() => Date)
     @Prop()
-    PremiumHistory?: [{type: string, begin: Date, end: Date}]
+    PremiumHistory: [{type: string, begin: Date, end: Date}]
 
     @Field(() => [Lesson])
     @Prop({ ref: 'Lesson' })
     lessons: (String | Lesson)[]
-
-    // @Prop()
-    // refreshToken?: string
-
-    // @Prop(() => String)
-    // resetPasswordToken: string
-
-    // @Prop(() => Number)
-    // resetTokenPasswordExpireIn: number
 }
 
 export type UserDocument = User & Document

@@ -58,15 +58,15 @@ export class SignupDto {
     @IsEnum(DIET)
     diet: string
 
-    @Field(() => Boolean, {defaultValue: false})
+    @Field(() => Boolean, { defaultValue: false })
     @IsOptional()
     isPremium: boolean
 
-    @Field(() => Date)
+    @Field(() => Date, { nullable: true })
     @IsOptional()
-    PremiumCreatedAt: Date
+    PremiumCreatedAt?: Date
 
-    @Field(() => Date)
+    @Field(() => Date, { nullable: true })
     @IsOptional()
     PremiumUpdatedAt: Date
 }
@@ -78,55 +78,54 @@ export class UpdateUserDto {
     @IsMongoId()
     id: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @IsOptional()
     @IsEmail()
     email?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @IsOptional()
     @MinLength(3)
     username?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @IsOptional()
     @MinLength(5)
     password?: string
 
-    @Field(() => String, { defaultValue: SEX.MALE })
+    @Field(() => String, { nullable: true })
     @IsOptional()
     @IsEnum(SEX)
     sex?: string
 
-    @Field(() => OBJECTIVE, { defaultValue: OBJECTIVE.NULL })
+    @Field(() => OBJECTIVE, { nullable: true })
     @IsOptional()
     @IsEnum(OBJECTIVE)
     objective?: OBJECTIVE
 
-    @Field(() => Number)
+    @Field(() => Number, { nullable: true })
     @IsOptional()
     @IsNumber()
     height?: number
 
-    @Field(() => Number)
+    @Field(() => Number, { nullable: true })
     @IsOptional()
     @IsNumber()
     weight?: number
 
-    @Field(() => DIET, { defaultValue: DIET.FLEX })
-    @IsOptional()
+    @Field(() => DIET, { nullable: true })
     @IsEnum(DIET)
     diet?: string
 
-    @Field(() => Boolean, {defaultValue: false})
+    @Field(() => Boolean, { nullable: true })
     @IsOptional()
     isPremium?: boolean
 
-    @Field(() => Date)
+    @Field(() => Date, { nullable: true })
     @IsOptional()
     PremiumCreatedAt?: Date
 
-    @Field(() => Date)
+    @Field(() => Date, { nullable: true })
     @IsOptional()
     PremiumUpdatedAt?: Date
 }
