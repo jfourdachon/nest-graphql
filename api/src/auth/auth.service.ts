@@ -45,19 +45,16 @@ export class AuthService {
     }
 
     async generateToken(id): Promise<Token> {
-        const accessToken = this.jwtService.sign(id, {
-            expiresIn: '20m',
+        //TODO put values in config file
+        const accessToken = this.jwtService.sign({userId: id}, {
+            expiresIn: '30m',
         });
 
-        const refreshToken = this.jwtService.sign(id, {
+        const refreshToken = this.jwtService.sign({userId: id}, {
             expiresIn: '30d',
         });
 
-        //TODO manage ttl
-        await this.cacheManager.set(id.toString() , refreshToken, {ttl:10000});
-        
-        // Maybe overkill
-        // this.userService.saveRefreshToken(id, refreshToken)
+        await this.cacheManager.set(id.toString() , refreshToken);
 
         return {
             accessToken,

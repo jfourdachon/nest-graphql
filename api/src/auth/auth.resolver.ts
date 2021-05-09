@@ -10,7 +10,6 @@ import { User } from 'src/user/user.model';
 import { SignupDto } from 'src/user/user.dto';
 import { RefreshToken, ForgotPasswordRequest, AccessToken } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
-import * as crypto from 'crypto'
 
 import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { EmailOptions } from '@nextnm/nestjs-mailgun'
@@ -49,11 +48,8 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
-        const tokens = await this.authService.generateToken({ userId: user._id })
-        // res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
+        const tokens = await this.authService.generateToken( user._id )
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
-        console.log({ tokens, user })
-
 
         return {
             token: tokens.accessToken
@@ -70,7 +66,7 @@ export class AuthResolver {
             throw Error('Email is already in use');
         }
 
-        const { tokens, user } = await this.authService.signup(signupDto)
+        const { tokens } = await this.authService.signup(signupDto)
 
         // res.cookie('token', tokens.accessToken, { httpOnly: true });
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
@@ -83,22 +79,25 @@ export class AuthResolver {
     @Query(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
-            const { accessToken, refreshToken } = cookie
-            const userId = await this.jwtService.decode(accessToken)['userId'];
+            const { refreshToken } = cookie
+            const userId = await this.jwtService.decode(refreshToken)['userId'];
 
             const tokenFromRedis = await this.cacheManager.get(userId.toString())
+
+            if (!tokenFromRedis) {
+                throw new Error('Refresh token has expired')
+            }
+
             if (tokenFromRedis === refreshToken) {
                 const newTokens = await this.authService.refreshToken(userId);
 
-                // res.cookie('accessToken', newTokens.accessToken, { httpOnly: true });
                 res.cookie('refreshToken', newTokens.refreshToken, { httpOnly: true });
 
-                //TODO setup bcrypt operations in a new thread
-                // const hashedRefreshToken = await bcryptjs.hash(refreshToken, 10)
                 return {
                     token: newTokens.accessToken
                 };
-            } else {
+            } 
+            else {
                 throw new Error('Refresh token don\'t match')
             }
         } catch (error) {
@@ -110,12 +109,13 @@ export class AuthResolver {
     async resetPasswordRequest(@Args('forgotPasswordRequestDto') forgotPasswordRequestDto: ForgotPasswordRequestDto, @ResGql() res: Response) {
         try {
             const user = await this.userService.findByEmail(forgotPasswordRequestDto.email);
-            // const user = await this.userService.findByEmail(emailDto.email)
             if (!user) {
                 throw new Error("User does not exist");
             }
-            res.clearCookie('accessToken')
+
+            //TODO put it in a service
             res.clearCookie('refreshToken')
+
             await this.cacheManager.del(user._id.toString())
 
             const resetPasswordToken = this.jwtService.sign({ userId: user._id }, {
@@ -124,10 +124,9 @@ export class AuthResolver {
 
             const hashedResetToken = await bcryptjs.hash(resetPasswordToken, 10)
 
-            //TODO manage ttl in config -> 15 min
-            this.cacheManager.set(user._id.toString(), hashedResetToken, { ttl: 1000 })
+            this.cacheManager.set(user._id.toString(), hashedResetToken)
 
-            //TODO Deep linking App or Linkto website or redirect to API that redirect to APP (for test)
+            //TODO Deep linking App or Link to website or redirect to API that redirect to APP (for test)
             const link = `http://localhost:4000/test/?token=${resetPasswordToken}&id=${user._id}`
             const options: EmailOptions = {
                 from: 'Hello <no-reply@jHello-world.com>',
