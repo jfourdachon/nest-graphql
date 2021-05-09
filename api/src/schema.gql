@@ -76,8 +76,8 @@ type RefreshToken {
 }
 
 input SignupDto {
-  PremiumCreatedAt: DateTime!
-  PremiumUpdatedAt: DateTime!
+  PremiumCreatedAt: DateTime
+  PremiumUpdatedAt: DateTime
   diet: String = "Flexitarian"
   email: String!
   height: Float!
