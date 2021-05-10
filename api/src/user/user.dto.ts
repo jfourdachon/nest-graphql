@@ -5,7 +5,7 @@ import { IsBoolean, IsEmail, IsJWT, IsMongoId, IsOptional, MinLength, IsNotEmpty
 
 enum DIET {
     FLEX = 'Flexitarian',
-    VEGETARIAN = 'vegetarian',
+    VEGETARIAN = 'Vegetarian',
     VEGAN = 'Vegan',
     OTHER = 'Other'
 }
@@ -17,9 +17,9 @@ enum SEX {
 
 
 enum OBJECTIVE {
-    UP = 'Up',
-    DOWN = 'Down',
-    NULL = 'Null',
+    UP = 'Prendre du poids',
+    DOWN = 'Perdre du poids',
+    HEALTH_FOOD = 'Améliorer mon alimentation',
 }
 
 @InputType()
@@ -42,7 +42,7 @@ export class SignupDto {
     @IsEnum(SEX)
     sex: string
 
-    @Field(() => String, { defaultValue: OBJECTIVE.NULL })
+    @Field(() => String, { defaultValue: OBJECTIVE.HEALTH_FOOD })
     @IsEnum(OBJECTIVE)
     objective: string
 

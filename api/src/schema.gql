@@ -82,7 +82,7 @@ input SignupDto {
   email: String!
   height: Float!
   isPremium: Boolean = false
-  objective: String = "Null"
+  objective: String = "Améliorer mon alimentation"
   password: String!
   sex: String = "Male"
   username: String!
