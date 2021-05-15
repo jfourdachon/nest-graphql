@@ -57,6 +57,7 @@ type Mutation {
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createUser(signupDto: SignupDto!): User!
   login(loginDto: LoginDto!): AccessToken!
+  logout: isLoggedOut!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(forgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
   signup(signupDto: SignupDto!): AccessToken!
@@ -104,6 +105,10 @@ type User {
   sex: String!
   username: String!
   weight: Float!
+}
+
+type isLoggedOut {
+  isLoggedOut: Boolean!
 }
 
 input resetPasswordDto {
