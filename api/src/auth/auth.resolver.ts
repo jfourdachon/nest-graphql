@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { SignupDto } from 'src/user/user.dto';
-import { RefreshToken, ForgotPasswordRequest, AccessToken } from 'src/shrared/types';
+import { RefreshToken, ForgotPasswordRequest, AccessToken, isLoggedOut } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 import { MailgunService } from '@nextnm/nestjs-mailgun';
@@ -76,7 +76,7 @@ export class AuthResolver {
         };
     }
 
-    @Mutation(returns => Boolean)
+    @Mutation(returns => isLoggedOut)
     async logout(@Cookies() cookie: any, @ResGql() res: Response) {
         res.clearCookie('refreshToken');
         return { isLoggedOut: true }
