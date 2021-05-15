@@ -57,6 +57,7 @@ type Mutation {
   createLesson(createLessonDto: CreateLessonDto!): Lesson!
   createUser(signupDto: SignupDto!): User!
   login(loginDto: LoginDto!): AccessToken!
+  logout: Boolean!
   resetPassword(resetPasswordDto: resetPasswordDto!): RefreshToken!
   resetPasswordRequest(forgotPasswordRequestDto: ForgotPasswordRequestDto!): ForgotPasswordRequest!
   signup(signupDto: SignupDto!): AccessToken!

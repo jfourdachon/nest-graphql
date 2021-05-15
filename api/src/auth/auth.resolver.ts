@@ -76,11 +76,10 @@ export class AuthResolver {
         };
     }
 
-    @Mutation(returns => null)
+    @Mutation(returns => Boolean)
     async logout(@Cookies() cookie: any, @ResGql() res: Response) {
         res.clearCookie('refreshToken');
-        return null
-
+        return { isLoggedOut: true }
     }
 
     @Query(returns => AccessToken)
