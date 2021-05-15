@@ -48,7 +48,7 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
-        const tokens = await this.authService.generateToken( user._id )
+        const tokens = await this.authService.generateToken(user._id)
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
 
         return {
@@ -76,6 +76,13 @@ export class AuthResolver {
         };
     }
 
+    @Mutation(returns => null)
+    async logout(@Cookies() cookie: any, @ResGql() res: Response) {
+        res.clearCookie('refreshToken');
+        return null
+
+    }
+
     @Query(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
@@ -96,7 +103,7 @@ export class AuthResolver {
                 return {
                     token: newTokens.accessToken
                 };
-            } 
+            }
             else {
                 throw new Error('Refresh token don\'t match')
             }
