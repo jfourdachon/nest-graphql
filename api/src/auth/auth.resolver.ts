@@ -38,7 +38,9 @@ export class AuthResolver {
         @Args('loginDto') { email, password }: LoginDto,
         @ResGql() res: Response,
     ) {
+        //TODO email to lowercase -> maybe check for @Pipe
         const user = await this.userService.findByEmail(email);
+        console.log({user})
         if (!user) {
             throw Error('Email or password incorrect');
         }
