@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
 import { SignupDto } from 'src/user/user.dto';
-import { RefreshToken, ForgotPasswordRequest, AccessToken } from 'src/shrared/types';
+import { RefreshToken, ForgotPasswordRequest, AccessToken, isLoggedOut } from 'src/shrared/types';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 import { MailgunService } from '@nextnm/nestjs-mailgun';
@@ -50,7 +50,7 @@ export class AuthResolver {
             throw Error('Email or password incorrect');
         }
 
-        const tokens = await this.authService.generateToken( user._id )
+        const tokens = await this.authService.generateToken(user._id)
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
 
         return {
@@ -78,6 +78,12 @@ export class AuthResolver {
         };
     }
 
+    @Mutation(returns => isLoggedOut)
+    async logout(@Cookies() cookie: any, @ResGql() res: Response) {
+        res.clearCookie('refreshToken');
+        return { isLoggedOut: true }
+    }
+
     @Query(returns => AccessToken)
     async refreshToken(@Cookies() cookie: any, @ResGql() res: Response) {
         try {
@@ -98,7 +104,7 @@ export class AuthResolver {
                 return {
                     token: newTokens.accessToken
                 };
-            } 
+            }
             else {
                 throw new Error('Refresh token don\'t match')
             }
